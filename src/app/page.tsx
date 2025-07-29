@@ -15,7 +15,7 @@ export default function HomePage() {
         {/* Personal Introduction */}
         <AnimatedBorderModule delay={300}>
           <div className="flex gap-8">
-            <div className="w-32 h-32 border border-white/20 flex-shrink-0 overflow-hidden">
+            <div className="w-32 h-32 border border-white/20 flex-shrink-0 overflow-hidden relative">
               <Image
                 src="/profile-photo.jpg"
                 alt="Xinze Li"
