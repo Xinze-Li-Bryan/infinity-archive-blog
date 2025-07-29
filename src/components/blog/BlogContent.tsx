@@ -23,7 +23,7 @@ export default function BlogContent({ slug }: BlogContentProps) {
                 } else {
                     setContent('Content not found.')
                 }
-            } catch (error) {
+            } catch {
                 setContent('Failed to load content.')
             } finally {
                 setLoading(false)
@@ -87,7 +87,7 @@ export default function BlogContent({ slug }: BlogContentProps) {
 
                 // 普通段落
                 if (line.trim() !== '' && !line.startsWith('#')) {
-                    let formatted = line.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="text-blue-400 hover:text-blue-300 underline">$1</a>')
+                    const formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold">$1</strong>')
                     return `<p key="${index}" class="mb-3 text-white/80 text-sm leading-relaxed">${formatted}</p>`
                 }
 

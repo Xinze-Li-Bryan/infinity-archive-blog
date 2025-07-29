@@ -65,7 +65,6 @@ const SystemStatus = () => {
 }
 
 export default function BlogLayout({ children }: BlogLayoutProps) {
-    const [titleComplete, setTitleComplete] = useState(false)
 
     return (
         <main className="min-h-screen bg-black text-white relative overflow-hidden">
@@ -88,7 +87,6 @@ export default function BlogLayout({ children }: BlogLayoutProps) {
                                         text="MATHEMATICAL_RESEARCH_PROTOCOL"
                                         speed={60}
                                         delay={1500}
-                                        onComplete={() => setTitleComplete(true)}
                                     />
                                 </div>
                             </div>

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import BlogLayout from '@/components/blog/BlogLayout'
 import AnimatedBorderModule from '@/components/blog/AnimatedBorderModule'
 import { getBlogPosts } from '@/lib/blog'
+import Image from 'next/image'
 
 export default function HomePage() {
   const recentPosts = getBlogPosts().slice(0, 3)
@@ -15,10 +16,11 @@ export default function HomePage() {
         <AnimatedBorderModule delay={300}>
           <div className="flex gap-8">
             <div className="w-32 h-32 border border-white/20 flex-shrink-0 overflow-hidden">
-              <img
+              <Image
                 src="/profile-photo.jpg"
                 alt="Xinze Li"
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             </div>
 
