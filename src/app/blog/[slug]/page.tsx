@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import BlogLayout from '@/components/blog/BlogLayout'
 import AnimatedBorderModule from '@/components/blog/AnimatedBorderModule'
+import BlogContent from '@/components/blog/BlogContent'
 import { getBlogPost, getBlogPosts } from '@/lib/blog'
 
 interface BlogPostPageProps {
@@ -40,7 +41,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         {/* Meta Info */}
                         <div className="flex items-center gap-4">
                             <span className="bg-white text-black text-sm px-3 py-1 font-black">
-                                WEEK_{post.week}
+                                {post.version}
                             </span>
                             <time className="text-sm text-white/40">{post.date}</time>
                             <div className="flex gap-2">
@@ -79,35 +80,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                             </div>
                         </div>
 
-                        <div className="space-y-4 text-white/80 leading-relaxed">
-                            <div className="bg-white/5 border border-white/10 p-6">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <div className="w-4 h-4 bg-white/20"></div>
-                                    <span className="text-sm font-black">CONTENT_UNDER_CONSTRUCTION</span>
-                                </div>
-
-                                <p className="mb-4">
-                                    THIS_LOG_ENTRY_WILL_CONTAIN_THE_DETAILED_DEVELOPMENT_UPDATE_FOR_{" "}
-                                    <span className="text-white font-black">{post.title.toUpperCase()}</span>.
-                                    INFRASTRUCTURE_SETUP_IN_PROGRESS.
-                                </p>
-
-                                <div className="space-y-2 text-sm">
-                                    <div className="border-l-2 border-white/20 pl-4">
-                                        <span className="text-white/60">SECTION_01:</span> TECHNICAL_ACHIEVEMENTS_THIS_WEEK
-                                    </div>
-                                    <div className="border-l-2 border-white/20 pl-4">
-                                        <span className="text-white/60">SECTION_02:</span> CODE_SAMPLES_AND_ARCHITECTURE_DECISIONS
-                                    </div>
-                                    <div className="border-l-2 border-white/20 pl-4">
-                                        <span className="text-white/60">SECTION_03:</span> CHALLENGES_FACED_AND_SOLUTIONS_FOUND
-                                    </div>
-                                    <div className="border-l-2 border-white/20 pl-4">
-                                        <span className="text-white/60">SECTION_04:</span> NEXT_WEEK_ROADMAP
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <BlogContent slug={post.slug} />
                     </div>
                 </AnimatedBorderModule>
 
@@ -120,9 +93,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                         <div className="flex gap-4 text-xs">
                             <Link href="/blog" className="text-white/60 hover:text-white transition-colors">
                                 ← PREVIOUS_ENTRIES
-                            </Link>
-                            <Link href="/about" className="text-white/60 hover:text-white transition-colors">
-                                RESEARCHER_INFO →
                             </Link>
                         </div>
                     </div>

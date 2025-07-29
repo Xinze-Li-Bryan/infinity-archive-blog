@@ -1,6 +1,10 @@
 # Week 4 Update: Multi-File Revolution - Building the Mathematical IDE of the Future
 
-*January 28, 2025*
+---
+
+**Date:** January 28, 2025
+
+---
 
 ## The Breakthrough Moment
 
@@ -13,12 +17,14 @@ As someone coming from pure mathematics, I never fully appreciated how complex "
 ## Before vs After: A Night and Day Difference
 
 **Three weeks ago:**
+
 - Single file editor
 - No project organization  
 - Manual content management
 - Basic Lean verification
 
 **Today:**
+
 - Professional file explorer with collapsible sidebar
 - Create/delete files with the L+ button
 - Auto-save every 2 seconds (no more lost work!)
@@ -32,16 +38,20 @@ The difference is visceral. Before, using the tool felt like working in a scratc
 ## Key Technical Wins
 
 ### Database Evolution
+
 The biggest change was restructuring our data model. Instead of projects containing a single `content` field, we now have a proper one-to-many relationship where projects contain multiple files. This seems obvious in retrospect, but required migrating existing projects and rebuilding the entire file management system.
 
 ### File Management That Actually Works
+
 The file explorer isn't just a pretty sidebar - it's designed for mathematical workflows:
+
 - **L+ creates new files** (mathematician-friendly, not just a "+" button)
 - **Intelligent file naming** (automatically adds .lean extension)
 - **Confirmation dialogs** for destructive operations
 - **Active file highlighting** so you always know where you are
 
 ### Auto-save with Conflict Prevention
+
 This was trickier than expected. We needed to preserve editor state when switching files while also auto-saving changes. The solution involves maintaining a local content cache and debounced saves. It sounds technical, but the user experience is seamless - your work just persists without thinking about it.
 
 ---
@@ -49,12 +59,15 @@ This was trickier than expected. We needed to preserve editor state when switchi
 ## The Problems We Hit (And Mostly Solved)
 
 ### The LaTeX Block Bug
+
 This one drove me crazy for a day. When switching between files, custom LaTeX command blocks would mysteriously migrate to the bottom of the editor. After digging into Monaco Editor's state management, we found the issue was with decoration restoration. It's mostly fixed now, though I'm still fine-tuning the edge cases.
 
 ### File Switching Performance
+
 With multiple files open, we needed to ensure smooth transitions. The challenge was preserving editor state (cursor position, scroll, selections) while loading new content. The solution involved careful state serialization and restoration.
 
 ### Database Migration Complexity
+
 Converting existing single-file projects to multi-file structure required a migration endpoint. Not glamorous work, but essential for users who had already created projects on the platform.
 
 ---
@@ -64,6 +77,7 @@ Converting existing single-file projects to multi-file structure required a migr
 As a mathematics PhD student, I'm constantly switching between different parts of a proof, referencing earlier results, and building complex arguments step by step. Having proper file organization changes how you think about structuring mathematical work.
 
 Instead of one monolithic file, you can now:
+
 - **Separate definitions from theorems**
 - **Organize by mathematical topic** (algebra.lean, topology.lean, etc.)
 - **Build hierarchical arguments** across multiple files

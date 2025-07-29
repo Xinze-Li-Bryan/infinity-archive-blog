@@ -78,13 +78,10 @@ export default function BlogPage() {
                 {/* Header */}
                 <AnimatedBorderModule delay={300}>
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-white text-black flex items-center justify-center text-2xl font-black">
-                            χ
-                        </div>
                         <div>
                             <h1 className="text-2xl font-black tracking-wider">DEVELOPMENT_LOG_ARCHIVE</h1>
                             <p className="text-xs text-white/40">
-                                WEEKLY_UPDATES_ON_INFINITY_ARCHIVE_DEVELOPMENT
+                                INFINITY_ARCHIVE_DEVELOPMENT_UPDATES
                             </p>
                         </div>
                     </div>
@@ -99,7 +96,7 @@ export default function BlogPage() {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <span className="bg-white text-black text-sm px-3 py-1 font-black">
-                                            WEEK_{post.week}
+                                            {post.version}
                                         </span>
                                         <time className="text-sm text-white/40">{post.date}</time>
                                     </div>

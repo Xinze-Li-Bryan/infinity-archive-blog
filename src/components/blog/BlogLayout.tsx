@@ -92,17 +92,15 @@ export default function BlogLayout({ children }: BlogLayoutProps) {
                                     />
                                 </div>
                             </div>
-
                             <nav className="font-mono text-sm space-x-6">
                                 <Link href="/" className="hover:text-white/60 transition-colors">HOME</Link>
-                                <Link href="/blog" className="hover:text-white/60 transition-colors">BLOG</Link>
-                                <Link href="/about" className="hover:text-white/60 transition-colors">ABOUT</Link>
+                                <Link href="/blog" className="hover:text-white/60 transition-colors">DEV_LOG</Link>
                                 <Link
                                     href="https://inftychi.vercel.app"
                                     target="_blank"
                                     className="hover:text-white/60 transition-colors"
                                 >
-                                    LIVE_DEMO
+                                    LIVE_PROJECT
                                 </Link>
                             </nav>
                         </div>
@@ -139,7 +137,6 @@ export default function BlogLayout({ children }: BlogLayoutProps) {
                                     <div className="text-xs text-white/40 mb-2">QUICK_ACCESS:</div>
                                     <div className="space-y-2 text-xs">
                                         <Link href="/blog" className="block hover:text-white/60">→ ALL_POSTS</Link>
-                                        <Link href="/about" className="block hover:text-white/60">→ RESEARCHER_INFO</Link>
                                         <Link href="https://inftychi.vercel.app" target="_blank" className="block hover:text-white/60">→ LIVE_SYSTEM</Link>
                                     </div>
                                 </div>

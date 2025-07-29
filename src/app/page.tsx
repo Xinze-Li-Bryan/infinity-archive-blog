@@ -2,153 +2,150 @@
 
 import Link from 'next/link'
 import BlogLayout from '@/components/blog/BlogLayout'
+import AnimatedBorderModule from '@/components/blog/AnimatedBorderModule'
 import { getBlogPosts } from '@/lib/blog'
-import { useState, useEffect } from 'react'
-
-// Animated Border Module
-const AnimatedBorderModule = ({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) => {
-  const [borderVisible, setBorderVisible] = useState(false)
-  const [borderProgress, setBorderProgress] = useState(0)
-
-  useEffect(() => {
-    const delayTimer = setTimeout(() => {
-      setBorderVisible(true)
-      const progressTimer = setInterval(() => {
-        setBorderProgress(prev => {
-          if (prev >= 100) {
-            clearInterval(progressTimer)
-            return 100
-          }
-          return prev + 2
-        })
-      }, 30)
-    }, delay)
-
-    return () => clearTimeout(delayTimer)
-  }, [delay])
-
-  return (
-    <div className={`bg-black font-mono h-full relative ${className}`}>
-      {/* Animated Border */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div
-          className="absolute top-0 left-0 h-0.5 bg-white transition-all duration-100"
-          style={{
-            width: borderProgress <= 25 ? `${borderProgress * 4}%` : '100%',
-            opacity: borderVisible ? 1 : 0
-          }}
-        />
-        <div
-          className="absolute top-0 right-0 w-0.5 bg-white transition-all duration-100"
-          style={{
-            height: borderProgress > 25 && borderProgress <= 50 ? `${(borderProgress - 25) * 4}%` : borderProgress > 50 ? '100%' : '0%',
-            opacity: borderVisible ? 1 : 0
-          }}
-        />
-        <div
-          className="absolute bottom-0 right-0 h-0.5 bg-white transition-all duration-100"
-          style={{
-            width: borderProgress > 50 && borderProgress <= 75 ? `${(borderProgress - 50) * 4}%` : borderProgress > 75 ? '100%' : '0%',
-            opacity: borderVisible ? 1 : 0
-          }}
-        />
-        <div
-          className="absolute bottom-0 left-0 w-0.5 bg-white transition-all duration-100"
-          style={{
-            height: borderProgress > 75 ? `${(borderProgress - 75) * 4}%` : '0%',
-            opacity: borderVisible ? 1 : 0
-          }}
-        />
-        {borderProgress >= 100 && (
-          <div className="absolute inset-0 border border-white/20 animate-pulse" />
-        )}
-      </div>
-      <div className="p-6 relative z-10">
-        {children}
-      </div>
-    </div>
-  )
-}
 
 export default function HomePage() {
-  const posts = getBlogPosts()
+  const recentPosts = getBlogPosts().slice(0, 3)
 
   return (
     <BlogLayout>
-      <div className="space-y-8 font-mono">
-        {/* Hero Section */}
-        <AnimatedBorderModule delay={500}>
-          <div className="text-center space-y-4">
-            <div className="text-xs text-white/40">DEVELOPMENT_LOG_INTERFACE</div>
-            <h1 className="text-3xl font-black tracking-wider">
-              INFINITY_ARCHIVE_RESEARCH_PROTOCOL
-            </h1>
-            <p className="text-white/60 max-w-2xl mx-auto">
-              REAL_TIME_UPDATES_ON_BUILDING_THE_PLANETARY_MATHEMATICAL_COMPUTER.<br />
-              FOLLOW_THE_JOURNEY_FROM_PROTOTYPE_TO_REVOLUTION.
-            </p>
+      <div className="space-y-12 font-mono">
+        {/* Personal Introduction */}
+        <AnimatedBorderModule delay={300}>
+          <div className="flex gap-8">
+            <div className="w-32 h-32 border border-white/20 flex-shrink-0 overflow-hidden">
+              <img
+                src="/profile-photo.jpg"
+                alt="Xinze Li"
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            <div className="flex-1 space-y-4">
+              <div>
+                <h1 className="text-3xl font-black tracking-wider mb-2">XINZE_LI (李昕泽)</h1>
+                <div className="text-white/60 space-y-1">
+                  <div>MATHEMATICS_PHD_STUDENT, UNIVERSITY_OF_TORONTO</div>
+                  <div className="text-white/40 text-sm">
+                    MIN_MAX_THEORY • COMPARISON_GEOMETRY • GEOMETRIC_MEASURE_THEORY
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-white/80 leading-relaxed">
+                Doctoral student specializing in min-max theory within geometric measure theory
+                and comparison geometry. Research focuses on variational methods and their
+                applications to geometric analysis.
+              </p>
+
+              <div className="text-sm text-white/60">
+                EMAIL: <span className="text-white">xbryanli.li@mail.utoronto.ca</span>
+              </div>
+            </div>
           </div>
         </AnimatedBorderModule>
 
-        {/* Latest Updates */}
-        <AnimatedBorderModule delay={1000}>
+        {/* Mathematical Research */}
+        <AnimatedBorderModule delay={600}>
           <div className="space-y-6">
-            <div className="flex items-center gap-4">
-              <div className="w-8 h-8 bg-white text-black flex items-center justify-center text-lg font-black">
-                ∞
-              </div>
-              <div>
-                <div className="text-xl font-black">LATEST_UPDATES</div>
-                <div className="text-xs text-white/40">CHRONOLOGICAL_ORDER</div>
-              </div>
-            </div>
+            <h2 className="text-2xl font-black">MATHEMATICAL_RESEARCH</h2>
 
             <div className="space-y-4">
-              {posts.map((post, index) => (
-                <Link key={post.slug} href={`/blog/${post.slug}`} className="block group">
-                  <div className="border-l-2 border-white/20 pl-6 py-4 hover:border-white/60 hover:bg-white/5 transition-all duration-200">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="bg-white text-black text-xs px-2 py-1 font-black">
-                        WEEK_{post.week}
-                      </span>
-                      <time className="text-xs text-white/40">{post.date}</time>
-                      <div className="flex gap-1">
-                        {post.tags.map(tag => (
-                          <span key={tag} className="text-xs text-white/60 bg-white/10 px-2 py-1">
-                            {tag.toUpperCase()}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <h3 className="text-lg font-black mb-2 group-hover:text-white/80 transition-colors">
-                      {post.title.toUpperCase()}
-                    </h3>
-                    <p className="text-white/60 text-sm">{post.excerpt}</p>
-                    <div className="text-xs text-white/40 mt-2">→ READ_FULL_LOG</div>
-                  </div>
-                </Link>
-              ))}
+              <div className="border-l-4 border-white/20 pl-6">
+                <h3 className="text-lg font-bold">
+                  <a
+                    href="https://arxiv.org/abs/2205.13694"
+                    target="_blank"
+                    className="text-white hover:text-blue-400 transition-colors"
+                  >
+                    On the equidistribution of closed geodesics and geodesic nets
+                  </a>
+                </h3>
+                <p className="text-white/60 text-sm">Xinze Li, Bruno Staffa</p>
+              </div>
+
+              <div className="border-l-4 border-white/20 pl-6">
+                <h3 className="text-lg font-bold">
+                  <a
+                    href="https://arxiv.org/abs/2404.09792"
+                    target="_blank"
+                    className="text-white hover:text-blue-400 transition-colors"
+                  >
+                    Lecture Notes on Comparison Geometry
+                  </a>
+                </h3>
+                <p className="text-white/60 text-sm">Xinze Li</p>
+              </div>
             </div>
           </div>
         </AnimatedBorderModule>
 
-        {/* System Info */}
-        <AnimatedBorderModule delay={1500}>
-          <div className="grid grid-cols-3 gap-6 text-center">
-            <div className="space-y-2">
-              <div className="text-2xl font-black">∞</div>
-              <div className="text-xs text-white/40">MATHEMATICAL_PROTOCOL</div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-2xl font-black">χ</div>
-              <div className="text-xs text-white/40">DECENTRALIZED_KNOWLEDGE</div>
-            </div>
-            <div className="space-y-2">
-              <div className="text-2xl font-black">⚡</div>
-              <div className="text-xs text-white/40">REAL_TIME_DEVELOPMENT</div>
-            </div>
+        {/* Infinity Archive Project */}
+        <AnimatedBorderModule delay={800}>
+          <div className="flex gap-4">
+            <Link
+              href="https://inftychi.vercel.app"
+              target="_blank"
+              className="bg-white text-black px-6 py-3 font-black hover:bg-white/90 transition-colors"
+            >
+              DEMO
+            </Link>
+            <Link
+              href="https://github.com/Xinze-Li-Bryan/inftychi"
+              target="_blank"
+              className="border border-white px-6 py-3 font-black hover:bg-white/10 transition-colors"
+            >
+              GITHUB
+            </Link>
+            <Link
+              href="/blog"
+              className="border border-white px-6 py-3 font-black hover:bg-white/10 transition-colors"
+            >
+              DEV_LOG
+            </Link>
+            <Link
+              href="https://x.com/fuguixomega"
+              target="_blank"
+              className="border border-white px-6 py-3 font-black hover:bg-white/10 transition-colors"
+            >
+              X / TWITTER
+            </Link>
           </div>
         </AnimatedBorderModule>
+
+        {/* Recent Updates */}
+        {recentPosts.length > 0 && (
+          <AnimatedBorderModule delay={1000}>
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-black">RECENT_UPDATES</h2>
+                <Link
+                  href="/blog"
+                  className="text-white/60 hover:text-white transition-colors"
+                >
+                  VIEW_ALL →
+                </Link>
+              </div>
+
+              <div className="space-y-3">
+                {recentPosts.map((post) => (
+                  <Link key={post.slug} href={`/blog/${post.slug}`} className="block">
+                    <div className="border-l-4 border-white/20 pl-6 py-3 hover:border-white/60 hover:bg-white/5 transition-all duration-200">
+                      <div className="flex items-center gap-3 mb-1">
+                        <span className="bg-white text-black text-xs px-2 py-1 font-black">
+                          {post.version}
+                        </span>
+                        <time className="text-white/60 text-sm">{post.date}</time>
+                      </div>
+                      <h3 className="text-lg font-bold">{post.title}</h3>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </AnimatedBorderModule>
+        )}
       </div>
     </BlogLayout>
   )

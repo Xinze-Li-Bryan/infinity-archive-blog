@@ -3,7 +3,7 @@ export interface BlogPost {
     title: string
     date: string
     excerpt: string
-    week: number
+    version: string
     tags: string[]
     status: 'published' | 'draft'
 }
@@ -11,10 +11,10 @@ export interface BlogPost {
 export const blogPosts: BlogPost[] = [
     {
         slug: 'week-4-multi-file-revolution',
-        title: 'Week 4 Update: Multi-File Revolution - Building the Mathematical IDE of the Future',
-        date: '2025-01-28',
-        excerpt: 'This week we launched the multi-file system for Infinity Archive. Real-time verification, file management, and auto-save - the IDE is becoming real.',
-        week: 4,
+        title: 'Multi-File Revolution - Building the Mathematical IDE of the Future',
+        date: '2025-07-26',
+        excerpt: 'Multi-file system launch with real-time verification, file management, and auto-save.',
+        version: 'v1.4.0',
         tags: ['development', 'multi-file', 'ide', 'lean4'],
         status: 'published'
     }
@@ -26,5 +26,10 @@ export function getBlogPosts() {
 }
 
 export function getBlogPost(slug: string) {
-    return blogPosts.find(post => post.slug === slug)
+    return blogPosts.find(post => post.slug === slug) || null
+}
+
+// 以后添加新博客只需要在这里加一个条目
+export function addBlogPost(post: BlogPost) {
+    blogPosts.unshift(post) // 添加到开头
 }
