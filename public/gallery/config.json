@@ -1,0 +1,22 @@
+{
+  "categories": [
+    {
+      "id": "aesthetics",
+      "name": "AESTHETICS",
+      "description": "Beauty in form and function",
+      "images": []
+    },
+    {
+      "id": "space-odyssey",
+      "name": "SPACE ODYSSEY 2001",
+      "description": "Kubrick's vision of humanity and technology",
+      "images": []
+    },
+    {
+      "id": "art",
+      "name": "ART & CULTURE",
+      "description": "Artistic expressions through time",
+      "images": []
+    }
+  ]
+}

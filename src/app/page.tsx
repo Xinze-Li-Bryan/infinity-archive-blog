@@ -49,12 +49,9 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="text-white/60 text-xs md:text-sm leading-relaxed max-w-2xl mx-auto text-center">
+          <div className="text-white/60 text-sm md:text-base leading-relaxed max-w-3xl mx-auto text-center space-y-4">
             <p>
-              I am currently co-founding an AI for mathematics startup and pursuing my PhD at University of Toronto.
-            </p>
-            <p className="mt-2">
-              I&apos;d be happy to connect with researchers and practitioners to explore and inspire solutions in this age of vast transformation.
+              I am co-founding <a href="https://inftychi-website.zeabur.app" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-white/80 transition-colors">Infinity Archive</a> with an exceptional team while pursuing my PhD at <a href="https://www.utoronto.ca" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-white/80 transition-colors">University of Toronto</a>, within a community of thoughtful and vibrant minds. The paradigm shift brought by AI emerges as part of the <span className="text-white font-semibold">broader dialectic of human history</span>. In this age of <span className="text-white font-semibold">vast transformation</span>, I am seeking resonance with minds shaping the future.
             </p>
           </div>
         </section>

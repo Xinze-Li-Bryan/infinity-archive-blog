@@ -1,0 +1,31 @@
+name: Gallery Update
+
+# 这个工作流在你推送图片到 gallery 文件夹时自动触发
+on:
+  push:
+    paths:
+      - 'public/gallery/**'
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Verify gallery config
+        run: |
+          if [ -f "public/gallery/config.json" ]; then
+            echo "✅ Gallery config found"
+            cat public/gallery/config.json
+          else
+            echo "❌ Gallery config not found"
+            exit 1
+          fi
+
+      - name: List gallery images
+        run: |
+          echo "📸 Gallery images:"
+          find public/gallery -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.jpeg" -o -name "*.webp" \) -ls

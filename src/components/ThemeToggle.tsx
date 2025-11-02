@@ -3,13 +3,15 @@
 import { useEffect, useState } from 'react'
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const [theme, setTheme] = useState<'dark' | 'light'>('light')
   const [mounted, setMounted] = useState(false)
 
   // 初始化：从 localStorage 读取保存的主题
   useEffect(() => {
     const saved = localStorage.getItem('theme') as 'dark' | 'light' | null
-    if (saved) setTheme(saved)
+    if (saved) {
+      setTheme(saved)
+    }
     setMounted(true)
   }, [])
 
@@ -21,26 +23,30 @@ export default function ThemeToggle() {
     document.getElementById('theme-styles')?.remove()
     document.getElementById('theme-overlay')?.remove()
 
-    if (theme === 'light') {
-      // 1. 全局反转滤镜
+    if (theme === 'dark') {
+      // 暗色模式：全局反转滤镜（将浅色变成深色）
       document.documentElement.style.filter =
-        'invert(1) hue-rotate(180deg) saturate(0.8) brightness(0.9) sepia(0.15)'
+        'invert(1) hue-rotate(180deg) saturate(0.8) brightness(0.9)'
       document.documentElement.style.transition = 'filter 0.3s ease-in-out'
 
-      // 2. PDF/公式反向抵消
+      // PDF/公式/画廊图片反向抵消（保持原色）
       const style = document.createElement('style')
       style.id = 'theme-styles'
       style.textContent = `
         .react-pdf__Page__canvas,
         iframe[title="PDF Preview"],
         .MathJax,
-        .katex {
-          filter: invert(1) hue-rotate(180deg) saturate(1.25) brightness(1.11) sepia(0) !important;
+        .katex,
+        .gallery-image-container {
+          filter: invert(1) hue-rotate(180deg) saturate(1.25) brightness(1.11) !important;
         }
       `
       document.head.appendChild(style)
+    } else {
+      // 浅色模式：不用滤镜，保持原始浅色背景
+      document.documentElement.style.filter = 'none'
 
-      // 3. 护眼覆盖层
+      // 添加浅色护眼覆盖层
       const overlay = document.createElement('div')
       overlay.id = 'theme-overlay'
       overlay.style.cssText = `
@@ -59,9 +65,6 @@ export default function ThemeToggle() {
         z-index: 99999;
       `
       document.body.appendChild(overlay)
-    } else {
-      // 暗色模式：移除所有滤镜
-      document.documentElement.style.filter = 'none'
     }
 
     // 保存到 localStorage
