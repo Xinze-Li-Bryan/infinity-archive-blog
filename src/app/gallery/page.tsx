@@ -232,11 +232,6 @@ export default function GalleryPage() {
                           : 'text-white/40 group-hover:text-white/30'
                       }`}>
                         {category.description}
-                        {category.images.length > 0 && (
-                          <span className="ml-2 text-white/30">
-                            · {category.images.length} image{category.images.length !== 1 ? 's' : ''}
-                          </span>
-                        )}
                       </p>
                     </div>
                   </div>

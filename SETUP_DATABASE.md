@@ -1,6 +1,6 @@
-# Gallery Database Setup Guide
+# Database Setup Guide
 
-This guide will help you set up Vercel Postgres for your gallery system.
+This guide will help you set up Vercel Postgres for your website (Gallery & Thoughts systems).
 
 ## Step 1: Create Vercel Postgres Database
 
@@ -33,22 +33,33 @@ These are automatically available in your deployed app. For local development:
 
 After deploying your code to Vercel and ensuring environment variables are set:
 
+### Initialize Gallery Tables
 1. Visit: `https://lixinze.xyz/api/gallery/init`
 2. This will create the necessary tables:
    - `categories` table (for gallery categories)
    - `images` table (for gallery images)
 
-You should see: `{"success": true}`
+### Initialize Thoughts/Blog Tables
+1. Visit: `https://lixinze.xyz/api/thoughts/init`
+2. This will create the necessary table:
+   - `thoughts` table (for blog posts)
+
+You should see: `{"success": true}` for both
 
 **Note**: If you see "missing_connection_string" error, make sure `POSTGRES_URL` environment variable is set in Vercel and redeploy the application.
 
-## Step 4: Start Using Your Gallery
+## Step 4: Start Using Your Systems
 
-Now you can:
+### Gallery
 1. Go to `https://lixinze.xyz/admin` and login
 2. Create categories and upload images
 3. All data is stored in Vercel Postgres
 4. View your gallery at `https://lixinze.xyz/gallery`
+
+### Thoughts & Reflections (Blog)
+1. Go to `https://lixinze.xyz/admin/thoughts` to manage blog posts
+2. Create, edit, and publish thoughts with Markdown support
+3. View published thoughts at `https://lixinze.xyz/thoughts`
 
 ## Database Schema
 
@@ -72,6 +83,21 @@ CREATE TABLE images (
   title VARCHAR(255),
   date VARCHAR(50),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+```
+
+### Thoughts Table
+```sql
+CREATE TABLE thoughts (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(500) NOT NULL,
+  slug VARCHAR(500) UNIQUE NOT NULL,
+  content TEXT NOT NULL,
+  excerpt TEXT,
+  cover_image TEXT,
+  published BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 ```
 
