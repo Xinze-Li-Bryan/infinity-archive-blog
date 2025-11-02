@@ -140,13 +140,21 @@ export default function GalleryPage() {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <h2 className="text-xl md:text-2xl font-thin tracking-wider group-hover:text-white/70 transition-all duration-700 mb-2">
+                      <h2 className={`text-xl md:text-2xl font-thin transition-all duration-700 mb-2 ${
+                        expandedCategory === category.id
+                          ? 'text-white/30 tracking-[0.3em]'
+                          : 'text-white/90 tracking-wider group-hover:text-white/50 group-hover:tracking-[0.25em]'
+                      }`}>
                         {category.name}
                       </h2>
-                      <p className="text-white/40 text-xs md:text-sm group-hover:text-white/60 transition-all duration-700">
+                      <p className={`text-xs md:text-sm transition-all duration-700 ${
+                        expandedCategory === category.id
+                          ? 'text-white/20'
+                          : 'text-white/40 group-hover:text-white/30'
+                      }`}>
                         {category.description}
                         {category.images.length > 0 && (
-                          <span className="ml-2 text-white/30 group-hover:text-white/50 transition-all duration-700">
+                          <span className="ml-2 text-white/30">
                             · {category.images.length} image{category.images.length !== 1 ? 's' : ''}
                           </span>
                         )}
