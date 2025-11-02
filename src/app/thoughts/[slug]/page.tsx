@@ -88,15 +88,18 @@ export default function ThoughtDetailPage() {
       </div>
 
       {/* Back Navigation */}
-      <div className="mb-8 md:mb-16">
-        <Link
-          href="/thoughts"
-          className="text-white/60 hover:text-white/90 transition-colors text-sm inline-flex items-center gap-2"
-        >
-          <span>←</span>
-          <span>Back to Thoughts</span>
-        </Link>
-      </div>
+      <Link href="/thoughts">
+        <div className="fixed top-4 md:top-8 left-4 md:left-8 z-50 cursor-pointer group">
+          <div className="flex items-center gap-2 md:gap-3">
+            <span className="text-white/40 group-hover:text-white/80 transition-all duration-500">
+              ←
+            </span>
+            <span className="text-white/40 group-hover:text-white/80 transition-all duration-500 text-xs md:text-sm tracking-wider">
+              BACK
+            </span>
+          </div>
+        </div>
+      </Link>
 
       <article className="max-w-4xl mx-auto">
         {/* Cover Image */}

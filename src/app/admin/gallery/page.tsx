@@ -347,14 +347,14 @@ export default function AdminPage() {
       </div>
 
       {/* Back Navigation */}
-      <Link href="/gallery">
+      <Link href="/admin">
         <div className="fixed top-4 md:top-8 left-4 md:left-8 z-50 cursor-pointer group">
           <div className="flex items-center gap-2 md:gap-3">
             <span className="text-white/40 group-hover:text-white/80 transition-all duration-500">
               ←
             </span>
             <span className="text-white/40 group-hover:text-white/80 transition-all duration-500 text-xs md:text-sm tracking-wider">
-              GALLERY
+              BACK
             </span>
           </div>
         </div>
