@@ -77,7 +77,12 @@ export default function AdminPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-    if (username === 'moqian' && password === 'Lgnrx527116') {
+
+    // 使用环境变量进行认证
+    const validUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME
+    const validPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+
+    if (username === validUsername && password === validPassword) {
       setIsAuthenticated(true)
       localStorage.setItem('admin_auth', 'true')
       setLoginError('')

@@ -23,8 +23,11 @@ export default function AdminDashboard() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // 简单的硬编码认证 - 生产环境应该使用更安全的方式
-    if (username === 'moqian' && password === 'Lgnrx527116') {
+    // 使用环境变量进行认证
+    const validUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME
+    const validPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+
+    if (username === validUsername && password === validPassword) {
       setIsAuthenticated(true)
       localStorage.setItem('admin-auth', 'true')
       setLoginError('')

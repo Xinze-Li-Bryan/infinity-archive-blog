@@ -28,6 +28,16 @@ These are automatically available in your deployed app. For local development:
 
 1. Run `vercel env pull .env.local` in your project directory
 2. This will download all environment variables to `.env.local`
+3. **Add admin credentials** to `.env.local`:
+   ```bash
+   NEXT_PUBLIC_ADMIN_USERNAME=your_username
+   NEXT_PUBLIC_ADMIN_PASSWORD=your_password
+   ```
+4. **IMPORTANT**: Also add these admin credentials to Vercel:
+   - Go to your Vercel project settings
+   - Navigate to **Environment Variables**
+   - Add `NEXT_PUBLIC_ADMIN_USERNAME` and `NEXT_PUBLIC_ADMIN_PASSWORD`
+   - Redeploy your application
 
 ## Step 3: Initialize the Database
 
