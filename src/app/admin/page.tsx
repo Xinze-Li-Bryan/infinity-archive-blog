@@ -109,36 +109,39 @@ export default function AdminDashboard() {
       </div>
 
       {/* Back Navigation */}
-      <div className="mb-8 md:mb-16">
-        <Link
-          href="/"
-          className="text-white/60 hover:text-white/90 transition-colors text-sm inline-flex items-center gap-2"
-        >
-          <span>←</span>
-          <span>Back to Home</span>
-        </Link>
-      </div>
+      <Link href="/">
+        <div className="fixed top-4 md:top-8 left-4 md:left-8 z-50 cursor-pointer group">
+          <div className="flex items-center gap-2 md:gap-3">
+            <span className="text-white/40 group-hover:text-white/80 transition-all duration-500">
+              ←
+            </span>
+            <span className="text-white/40 group-hover:text-white/80 transition-all duration-500 text-xs md:text-sm tracking-wider">
+              BACK
+            </span>
+          </div>
+        </div>
+      </Link>
 
-      <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <header className="mb-16">
+      <div className="space-y-8 md:space-y-12">
+        {/* Page Title */}
+        <section className="border-b border-white/10 pb-6 pt-8 md:pt-12">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-4xl md:text-6xl font-thin text-white/90 tracking-wider mb-4">
-                Admin Dashboard
+              <h1 className="text-2xl md:text-3xl font-thin tracking-wider mb-3">
+                ADMIN DASHBOARD
               </h1>
-              <p className="text-white/60 text-base md:text-lg">
+              <p className="text-white/60 text-xs md:text-sm">
                 Manage your content and settings
               </p>
             </div>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded transition-colors text-sm"
+              className="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded transition-colors text-xs md:text-sm"
             >
               Logout
             </button>
           </div>
-        </header>
+        </section>
 
         {/* Management Cards */}
         <div className="grid md:grid-cols-2 gap-6">
@@ -195,49 +198,6 @@ export default function AdminDashboard() {
               </div>
             </div>
           </Link>
-        </div>
-
-        {/* Quick Stats */}
-        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="border border-white/10 rounded-lg p-4 bg-black/10">
-            <p className="text-white/40 text-xs mb-2">Total Systems</p>
-            <p className="text-white/90 text-2xl font-thin">2</p>
-          </div>
-          <div className="border border-white/10 rounded-lg p-4 bg-black/10">
-            <p className="text-white/40 text-xs mb-2">Gallery</p>
-            <p className="text-white/90 text-2xl font-thin">Active</p>
-          </div>
-          <div className="border border-white/10 rounded-lg p-4 bg-black/10">
-            <p className="text-white/40 text-xs mb-2">Thoughts</p>
-            <p className="text-white/90 text-2xl font-thin">Active</p>
-          </div>
-          <div className="border border-white/10 rounded-lg p-4 bg-black/10">
-            <p className="text-white/40 text-xs mb-2">Database</p>
-            <p className="text-white/90 text-2xl font-thin">Postgres</p>
-          </div>
-        </div>
-
-        {/* Info Section */}
-        <div className="mt-12 border border-white/10 rounded-xl p-6 bg-black/10">
-          <h3 className="text-white/90 text-lg font-thin mb-4">System Information</h3>
-          <div className="space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-white/50">Platform</span>
-              <span className="text-white/70">Next.js 15.4.4</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-white/50">Database</span>
-              <span className="text-white/70">Vercel Postgres (Neon)</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-white/50">Hosting</span>
-              <span className="text-white/70">Vercel</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-white/50">Domain</span>
-              <span className="text-white/70">lixinze.xyz</span>
-            </div>
-          </div>
         </div>
       </div>
     </BlogLayout>

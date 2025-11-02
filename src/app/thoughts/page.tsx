@@ -60,16 +60,16 @@ export default function ThoughtsPage() {
         </div>
       </Link>
 
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <header className="mb-16">
-          <h1 className="text-4xl md:text-6xl font-thin text-white/90 tracking-wider mb-6">
-            Thoughts & Reflections
+      <div className="space-y-8 md:space-y-12">
+        {/* Page Title */}
+        <section className="border-b border-white/10 pb-6 pt-8 md:pt-12">
+          <h1 className="text-2xl md:text-3xl font-thin tracking-wider mb-6">
+            THOUGHTS AND REFLECTIONS
           </h1>
-          <p className="text-white/60 text-base md:text-lg leading-relaxed">
+          <p className="text-white/60 text-xs md:text-sm leading-relaxed max-w-2xl">
             A collection of ideas, musings, and reflections on various topics.
           </p>
-        </header>
+        </section>
 
         {/* Thoughts Grid */}
         {loading ? (
@@ -81,7 +81,7 @@ export default function ThoughtsPage() {
             No published thoughts yet. Check back soon!
           </div>
         ) : (
-          <div className="space-y-12">
+          <section className="space-y-12">
             {thoughts.map((thought) => (
               <Link
                 key={thought.id}
@@ -129,7 +129,7 @@ export default function ThoughtsPage() {
                 </article>
               </Link>
             ))}
-          </div>
+          </section>
         )}
       </div>
     </BlogLayout>

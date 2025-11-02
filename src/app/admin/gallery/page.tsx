@@ -364,19 +364,21 @@ export default function AdminPage() {
         {/* Page Title */}
         <section className="border-b border-white/10 pb-6 pt-8 md:pt-12">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl md:text-3xl font-thin tracking-wider">
-              ADMIN PANEL
-            </h1>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-thin tracking-wider mb-3">
+                MANAGE GALLERY
+              </h1>
+              <p className="text-white/60 text-xs md:text-sm">
+                Manage your gallery with database storage
+              </p>
+            </div>
             <button
               onClick={handleLogout}
-              className="text-white/40 hover:text-white/80 text-xs transition-colors px-2"
+              className="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded transition-colors text-xs md:text-sm"
             >
               Logout
             </button>
           </div>
-          <p className="text-white/60 text-xs md:text-sm mt-2">
-            Manage your gallery with database storage
-          </p>
         </section>
 
         {/* Upload Status */}

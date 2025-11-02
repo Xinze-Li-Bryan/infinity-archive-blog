@@ -164,16 +164,16 @@ export default function ThoughtsAdminPage() {
         </div>
       </Link>
 
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <header className="mb-12">
-          <h1 className="text-3xl md:text-5xl font-thin text-white/90 tracking-wider mb-4">
-            Manage Thoughts & Reflections
+      <div className="space-y-8 md:space-y-12">
+        {/* Page Title */}
+        <section className="border-b border-white/10 pb-6 pt-8 md:pt-12">
+          <h1 className="text-2xl md:text-3xl font-thin tracking-wider mb-3">
+            MANAGE THOUGHTS & REFLECTIONS
           </h1>
-          <p className="text-white/50 text-sm md:text-base">
+          <p className="text-white/60 text-xs md:text-sm">
             Create and manage your blog posts with Markdown support
           </p>
-        </header>
+        </section>
 
         {/* Create New Button */}
         {!isCreating && !editingId && (
