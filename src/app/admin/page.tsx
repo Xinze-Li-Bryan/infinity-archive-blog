@@ -432,11 +432,11 @@ export default function AdminPage() {
         {/* Categories List */}
         <section className="space-y-8">
           {categories.map((category) => (
-            <div key={category.id} className="relative">
+            <div key={category.id} className="relative overflow-hidden">
               {/* Category Header */}
               <div
                 onClick={() => toggleCategory(category.id)}
-                className="cursor-pointer group py-6 border-b border-white/10 hover:border-white/20 transition-all duration-500"
+                className="cursor-pointer group py-6 border-b border-white/10 hover:border-white/20 transition-all duration-700"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
@@ -457,10 +457,18 @@ export default function AdminPage() {
                       </div>
                     ) : (
                       <>
-                        <h2 className="text-xl md:text-2xl font-thin tracking-wider group-hover:text-white/50 transition-all duration-500 mb-2">
+                        <h2 className={`text-xl md:text-2xl font-thin transition-all duration-700 mb-2 ${
+                          expandedCategory === category.id
+                            ? 'text-white/30 tracking-[0.3em]'
+                            : 'text-white/90 tracking-wider group-hover:text-white/50 group-hover:tracking-[0.25em]'
+                        }`}>
                           {category.name}
                         </h2>
-                        <p className="text-white/40 text-xs md:text-sm">
+                        <p className={`text-xs md:text-sm transition-all duration-700 ${
+                          expandedCategory === category.id
+                            ? 'text-white/20'
+                            : 'text-white/40 group-hover:text-white/30'
+                        }`}>
                           {category.description}
                           {category.images.length > 0 && (
                             <span className="ml-2 text-white/30">
@@ -516,16 +524,20 @@ export default function AdminPage() {
                         </button>
                       </>
                     )}
-                    <div className={`text-white/40 text-sm transition-transform duration-300 ${expandedCategory === category.id ? 'rotate-180' : ''}`}>
-                      ▼
-                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Expanded Gallery */}
-              {expandedCategory === category.id && (
-                <div className="mt-6 space-y-4">
+              {/* Expanded Gallery with smooth animation */}
+              <div
+                className={`transition-all duration-700 ease-in-out ${
+                  expandedCategory === category.id
+                    ? 'max-h-[3000px] opacity-100 mt-6'
+                    : 'max-h-0 opacity-0 mt-0'
+                }`}
+                style={{ overflow: expandedCategory === category.id ? 'visible' : 'hidden' }}
+              >
+                <div className="space-y-4">
                   {/* Upload Images Section */}
                   <div className="border border-dashed border-white/20 rounded-lg p-6">
                     <h3 className="text-sm text-white/70 mb-4">+ Add Images to {category.name}</h3>
@@ -616,7 +628,7 @@ export default function AdminPage() {
                     </div>
                   )}
                 </div>
-              )}
+              </div>
             </div>
           ))}
         </section>
