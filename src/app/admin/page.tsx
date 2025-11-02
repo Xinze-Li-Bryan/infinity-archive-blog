@@ -12,7 +12,6 @@ type ImageType = {
   alt: string
   title: string
   date: string
-  dataUrl?: string
 }
 
 type CategoryType = {
@@ -22,20 +21,15 @@ type CategoryType = {
   images: ImageType[]
 }
 
-type GalleryConfig = {
-  categories: CategoryType[]
-}
-
 export default function AdminPage() {
   // 认证状态
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
-  const [githubToken, setGithubToken] = useState('')
 
   // 画廊状态
-  const [config, setConfig] = useState<GalleryConfig>({ categories: [] })
+  const [categories, setCategories] = useState<CategoryType[]>([])
   const [mounted, setMounted] = useState(false)
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false)
@@ -57,14 +51,8 @@ export default function AdminPage() {
   })
 
   // 图片上传
-  const [uploadingImages, setUploadingImages] = useState<File[]>([])
+  const [uploadingImages, setUploadingImages] = useState<{ [key: string]: File }>({})
   const [imageMetadata, setImageMetadata] = useState<{ [key: string]: { title: string, alt: string, date: string } }>({})
-
-  // GitHub配置
-  const GITHUB_OWNER = 'Xinze-Li-Bryan'
-  const GITHUB_REPO = 'lixinze-web'
-  const GITHUB_BRANCH = 'main'
-  const GITHUB_TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN || ''
 
   useEffect(() => {
     setMounted(true)
@@ -72,19 +60,19 @@ export default function AdminPage() {
     const savedAuth = localStorage.getItem('admin_auth')
     if (savedAuth === 'true') {
       setIsAuthenticated(true)
-      setGithubToken(GITHUB_TOKEN)
-      loadConfig()
+      loadCategories()
     }
   }, [])
 
-  const loadConfig = () => {
-    fetch('/gallery/config.json')
-      .then(res => res.json())
-      .then((data: GalleryConfig) => setConfig(data))
-      .catch(err => {
-        console.error('Failed to load config:', err)
-        setConfig({ categories: [] })
-      })
+  const loadCategories = async () => {
+    try {
+      const res = await fetch('/api/gallery/categories')
+      const data = await res.json()
+      setCategories(data.categories || [])
+    } catch (err) {
+      console.error('Failed to load categories:', err)
+      setCategories([])
+    }
   }
 
   const handleLogin = (e: React.FormEvent) => {
@@ -93,7 +81,7 @@ export default function AdminPage() {
       setIsAuthenticated(true)
       localStorage.setItem('admin_auth', 'true')
       setLoginError('')
-      loadConfig()
+      loadCategories()
     } else {
       setLoginError('Invalid username or password')
     }
@@ -102,32 +90,42 @@ export default function AdminPage() {
   const handleLogout = () => {
     setIsAuthenticated(false)
     localStorage.removeItem('admin_auth')
-    setGithubToken('')
   }
 
   const toggleCategory = (categoryId: string) => {
     setExpandedCategory(expandedCategory === categoryId ? null : categoryId)
   }
 
-  const addCategory = () => {
+  const addCategory = async () => {
     if (!newCategory.id || !newCategory.name) {
       alert('Please fill in Category ID and Name')
       return
     }
 
-    if (config.categories.some(c => c.id === newCategory.id)) {
+    if (categories.some(c => c.id === newCategory.id)) {
       alert('Category ID already exists')
       return
     }
 
-    const updatedConfig = {
-      ...config,
-      categories: [...config.categories, { ...newCategory, images: [] }]
-    }
+    try {
+      const res = await fetch('/api/gallery/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCategory)
+      })
 
-    setConfig(updatedConfig)
-    setNewCategory({ id: '', name: '', description: '' })
-    setShowNewCategoryForm(false)
+      if (res.ok) {
+        await loadCategories()
+        setNewCategory({ id: '', name: '', description: '' })
+        setShowNewCategoryForm(false)
+        setUploadStatus('✅ Category created successfully!')
+        setTimeout(() => setUploadStatus(''), 2000)
+      } else {
+        throw new Error('Failed to create category')
+      }
+    } catch (error) {
+      alert(`Error: ${error}`)
+    }
   }
 
   const startEditCategory = (category: CategoryType) => {
@@ -138,173 +136,114 @@ export default function AdminPage() {
     })
   }
 
-  const saveEditCategory = (categoryId: string) => {
-    const updatedConfig = {
-      ...config,
-      categories: config.categories.map(c =>
-        c.id === categoryId
-          ? { ...c, name: editCategoryForm.name, description: editCategoryForm.description }
-          : c
-      )
+  const saveEditCategory = async (categoryId: string) => {
+    try {
+      const res = await fetch('/api/gallery/categories', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: categoryId, ...editCategoryForm })
+      })
+
+      if (res.ok) {
+        await loadCategories()
+        setEditingCategory(null)
+        setUploadStatus('✅ Category updated successfully!')
+        setTimeout(() => setUploadStatus(''), 2000)
+      } else {
+        throw new Error('Failed to update category')
+      }
+    } catch (error) {
+      alert(`Error: ${error}`)
     }
-    setConfig(updatedConfig)
-    setEditingCategory(null)
   }
 
-  const deleteCategory = (categoryId: string) => {
-    const category = config.categories.find(c => c.id === categoryId)
+  const deleteCategory = async (categoryId: string) => {
+    const category = categories.find(c => c.id === categoryId)
     if (!category) return
 
     if (!confirm(`Delete "${category.name}" and ${category.images.length} image(s)?`)) {
       return
     }
 
-    setConfig({
-      ...config,
-      categories: config.categories.filter(c => c.id !== categoryId)
-    })
+    try {
+      const res = await fetch('/api/gallery/categories', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: categoryId })
+      })
+
+      if (res.ok) {
+        await loadCategories()
+        setUploadStatus('✅ Category deleted successfully!')
+        setTimeout(() => setUploadStatus(''), 2000)
+      } else {
+        throw new Error('Failed to delete category')
+      }
+    } catch (error) {
+      alert(`Error: ${error}`)
+    }
   }
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>, categoryId: string) => {
     const files = Array.from(e.target.files || [])
-    setUploadingImages(files)
-
+    const newUploadingImages: { [key: string]: File } = {}
     const metadata: { [key: string]: { title: string, alt: string, date: string } } = {}
+
     files.forEach(file => {
-      metadata[file.name] = {
+      const key = `${categoryId}-${file.name}`
+      newUploadingImages[key] = file
+      metadata[key] = {
         title: file.name.replace(/\.[^/.]+$/, ''),
         alt: file.name.replace(/\.[^/.]+$/, ''),
         date: new Date().getFullYear().toString()
       }
     })
+
+    setUploadingImages(newUploadingImages)
     setImageMetadata(metadata)
   }
 
-  const uploadToGithub = async (categoryId: string) => {
-    if (!githubToken) {
-      alert('GitHub token not found. Please check your environment variables.')
-      return
-    }
+  const uploadImages = async (categoryId: string) => {
+    const imagesToUpload = Object.entries(uploadingImages).filter(([key]) => key.startsWith(categoryId))
 
-    if (uploadingImages.length === 0) {
+    if (imagesToUpload.length === 0) {
       alert('Please select images first')
       return
     }
 
     setUploading(true)
-    setUploadStatus('Uploading images to GitHub...')
+    setUploadStatus('Uploading images...')
 
     try {
-      const category = config.categories.find(c => c.id === categoryId)
-      if (!category) {
-        throw new Error('Category not found')
-      }
-
-      // 上传每个图片
-      const uploadedImages: ImageType[] = []
-      for (const file of uploadingImages) {
+      for (const [key, file] of imagesToUpload) {
         setUploadStatus(`Uploading ${file.name}...`)
 
-        // 读取文件为base64
-        const base64 = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader()
-          reader.onload = () => {
-            const result = reader.result as string
-            // 移除 data:image/...;base64, 前缀
-            const base64Data = result.split(',')[1]
-            resolve(base64Data)
-          }
-          reader.onerror = reject
-          reader.readAsDataURL(file)
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append('category_id', categoryId)
+        formData.append('title', imageMetadata[key]?.title || file.name)
+        formData.append('alt', imageMetadata[key]?.alt || file.name)
+        formData.append('date', imageMetadata[key]?.date || new Date().getFullYear().toString())
+
+        const res = await fetch('/api/gallery/upload', {
+          method: 'POST',
+          body: formData
         })
 
-        // 上传到GitHub
-        const path = `public/gallery/${categoryId}/${file.name}`
-        const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `token ${githubToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            message: `Add gallery image: ${file.name}`,
-            content: base64,
-            branch: GITHUB_BRANCH
-          })
-        })
-
-        if (!response.ok) {
-          const error = await response.json()
-          throw new Error(`Failed to upload ${file.name}: ${error.message}`)
+        if (!res.ok) {
+          throw new Error(`Failed to upload ${file.name}`)
         }
-
-        // 添加到配置
-        const maxId = Math.max(0, ...config.categories.flatMap(c => c.images.map(img => img.id)))
-        uploadedImages.push({
-          id: maxId + uploadedImages.length + 1,
-          src: `/gallery/${categoryId}/${file.name}`,
-          alt: imageMetadata[file.name]?.alt || file.name,
-          title: imageMetadata[file.name]?.title || file.name,
-          date: imageMetadata[file.name]?.date || new Date().getFullYear().toString()
-        })
       }
 
-      // 更新配置
-      const updatedConfig = {
-        ...config,
-        categories: config.categories.map(c =>
-          c.id === categoryId
-            ? { ...c, images: [...c.images, ...uploadedImages] }
-            : c
-        )
-      }
-
-      // 上传更新后的config.json到GitHub
-      setUploadStatus('Updating config.json...')
-
-      // 先获取当前config.json的SHA
-      const getResponse = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/gallery/config.json`, {
-        headers: {
-          'Authorization': `token ${githubToken}`,
-        }
-      })
-
-      let sha = ''
-      if (getResponse.ok) {
-        const data = await getResponse.json()
-        sha = data.sha
-      }
-
-      // 上传新的config.json
-      const configContent = btoa(unescape(encodeURIComponent(JSON.stringify(updatedConfig, null, 2))))
-      const putResponse = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/gallery/config.json`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `token ${githubToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: 'Update gallery config',
-          content: configContent,
-          branch: GITHUB_BRANCH,
-          ...(sha && { sha })
-        })
-      })
-
-      if (!putResponse.ok) {
-        const error = await putResponse.json()
-        throw new Error(`Failed to update config: ${error.message}`)
-      }
-
-      setConfig(updatedConfig)
-      setUploadingImages([])
+      await loadCategories()
+      setUploadingImages({})
       setImageMetadata({})
-      setUploadStatus('✅ Upload complete! Vercel will auto-deploy.')
+      setUploadStatus('✅ Upload complete!')
 
       setTimeout(() => {
         setUploadStatus('')
         setUploading(false)
-      }, 3000)
+      }, 2000)
 
     } catch (error) {
       console.error('Upload error:', error)
@@ -313,77 +252,27 @@ export default function AdminPage() {
     }
   }
 
-  const removeImage = (categoryId: string, imageId: number) => {
+  const removeImage = async (categoryId: string, imageId: number) => {
     if (!confirm('Are you sure you want to delete this image?')) {
       return
     }
 
-    const updatedConfig = {
-      ...config,
-      categories: config.categories.map(c =>
-        c.id === categoryId
-          ? { ...c, images: c.images.filter(img => img.id !== imageId) }
-          : c
-      )
-    }
-    setConfig(updatedConfig)
-  }
-
-  const saveConfigToGithub = async () => {
-    if (!githubToken) {
-      alert('GitHub token not found. Please check your environment variables.')
-      return
-    }
-
-    setUploading(true)
-    setUploadStatus('Saving configuration to GitHub...')
-
     try {
-      // 获取当前config.json的SHA
-      const getResponse = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/gallery/config.json`, {
-        headers: {
-          'Authorization': `token ${githubToken}`,
-        }
+      const res = await fetch('/api/gallery/images', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: imageId })
       })
 
-      let sha = ''
-      if (getResponse.ok) {
-        const data = await getResponse.json()
-        sha = data.sha
+      if (res.ok) {
+        await loadCategories()
+        setUploadStatus('✅ Image deleted successfully!')
+        setTimeout(() => setUploadStatus(''), 2000)
+      } else {
+        throw new Error('Failed to delete image')
       }
-
-      // 上传新的config.json
-      const configContent = btoa(unescape(encodeURIComponent(JSON.stringify(config, null, 2))))
-      const putResponse = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/gallery/config.json`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `token ${githubToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: 'Update gallery configuration',
-          content: configContent,
-          branch: GITHUB_BRANCH,
-          ...(sha && { sha })
-        })
-      })
-
-      if (!putResponse.ok) {
-        const error = await putResponse.json()
-        throw new Error(`Failed to update config: ${error.message}`)
-      }
-
-      setUploadStatus('✅ Configuration saved! Vercel will auto-deploy.')
-
-      setTimeout(() => {
-        setUploadStatus('')
-        setUploading(false)
-      }, 3000)
-
     } catch (error) {
-      console.error('Save error:', error)
-      setUploadStatus(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
-      setUploading(false)
+      alert(`Error: ${error}`)
     }
   }
 
@@ -470,24 +359,15 @@ export default function AdminPage() {
             <h1 className="text-2xl md:text-3xl font-thin tracking-wider">
               ADMIN PANEL
             </h1>
-            <div className="flex gap-2">
-              <button
-                onClick={saveConfigToGithub}
-                disabled={uploading}
-                className="bg-white/10 hover:bg-white/20 text-white/90 px-4 py-2 rounded text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                💾 Save to GitHub
-              </button>
-              <button
-                onClick={handleLogout}
-                className="text-white/40 hover:text-white/80 text-xs transition-colors px-2"
-              >
-                Logout
-              </button>
-            </div>
+            <button
+              onClick={handleLogout}
+              className="text-white/40 hover:text-white/80 text-xs transition-colors px-2"
+            >
+              Logout
+            </button>
           </div>
           <p className="text-white/60 text-xs md:text-sm mt-2">
-            Make changes and click "Save to GitHub" to deploy
+            Manage your gallery with database storage
           </p>
         </section>
 
@@ -551,7 +431,7 @@ export default function AdminPage() {
 
         {/* Categories List */}
         <section className="space-y-8">
-          {config.categories.map((category) => (
+          {categories.map((category) => (
             <div key={category.id} className="relative">
               {/* Category Header */}
               <div
@@ -659,52 +539,56 @@ export default function AdminPage() {
                       disabled={uploading}
                     />
 
-                    {uploadingImages.length > 0 && (
+                    {Object.entries(uploadingImages).filter(([key]) => key.startsWith(category.id)).length > 0 && (
                       <div className="space-y-3">
-                        <p className="text-white/60 text-xs">{uploadingImages.length} image(s) selected</p>
-                        {uploadingImages.map((file, index) => (
-                          <div key={index} className="border border-white/10 rounded p-3 space-y-2">
-                            <p className="text-white/90 text-xs font-semibold">{file.name}</p>
-                            <div className="grid grid-cols-3 gap-2">
-                              <input
-                                type="text"
-                                placeholder="Title"
-                                value={imageMetadata[file.name]?.title || ''}
-                                onChange={(e) => setImageMetadata({
-                                  ...imageMetadata,
-                                  [file.name]: { ...imageMetadata[file.name], title: e.target.value }
-                                })}
-                                className="bg-black border border-white/10 text-white/90 px-2 py-1 rounded text-xs focus:outline-none focus:border-white/40"
-                              />
-                              <input
-                                type="text"
-                                placeholder="Alt text"
-                                value={imageMetadata[file.name]?.alt || ''}
-                                onChange={(e) => setImageMetadata({
-                                  ...imageMetadata,
-                                  [file.name]: { ...imageMetadata[file.name], alt: e.target.value }
-                                })}
-                                className="bg-black border border-white/10 text-white/90 px-2 py-1 rounded text-xs focus:outline-none focus:border-white/40"
-                              />
-                              <input
-                                type="text"
-                                placeholder="Date"
-                                value={imageMetadata[file.name]?.date || ''}
-                                onChange={(e) => setImageMetadata({
-                                  ...imageMetadata,
-                                  [file.name]: { ...imageMetadata[file.name], date: e.target.value }
-                                })}
-                                className="bg-black border border-white/10 text-white/90 px-2 py-1 rounded text-xs focus:outline-none focus:border-white/40"
-                              />
+                        <p className="text-white/60 text-xs">
+                          {Object.entries(uploadingImages).filter(([key]) => key.startsWith(category.id)).length} image(s) selected
+                        </p>
+                        {Object.entries(uploadingImages)
+                          .filter(([key]) => key.startsWith(category.id))
+                          .map(([key, file]) => (
+                            <div key={key} className="border border-white/10 rounded p-3 space-y-2">
+                              <p className="text-white/90 text-xs font-semibold">{file.name}</p>
+                              <div className="grid grid-cols-3 gap-2">
+                                <input
+                                  type="text"
+                                  placeholder="Title"
+                                  value={imageMetadata[key]?.title || ''}
+                                  onChange={(e) => setImageMetadata({
+                                    ...imageMetadata,
+                                    [key]: { ...imageMetadata[key], title: e.target.value }
+                                  })}
+                                  className="bg-black border border-white/10 text-white/90 px-2 py-1 rounded text-xs focus:outline-none focus:border-white/40"
+                                />
+                                <input
+                                  type="text"
+                                  placeholder="Alt text"
+                                  value={imageMetadata[key]?.alt || ''}
+                                  onChange={(e) => setImageMetadata({
+                                    ...imageMetadata,
+                                    [key]: { ...imageMetadata[key], alt: e.target.value }
+                                  })}
+                                  className="bg-black border border-white/10 text-white/90 px-2 py-1 rounded text-xs focus:outline-none focus:border-white/40"
+                                />
+                                <input
+                                  type="text"
+                                  placeholder="Date"
+                                  value={imageMetadata[key]?.date || ''}
+                                  onChange={(e) => setImageMetadata({
+                                    ...imageMetadata,
+                                    [key]: { ...imageMetadata[key], date: e.target.value }
+                                  })}
+                                  className="bg-black border border-white/10 text-white/90 px-2 py-1 rounded text-xs focus:outline-none focus:border-white/40"
+                                />
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
                         <button
-                          onClick={() => uploadToGithub(category.id)}
+                          onClick={() => uploadImages(category.id)}
                           disabled={uploading}
                           className="w-full bg-white/10 hover:bg-white/20 text-white/90 px-4 py-2 rounded text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          {uploading ? 'Uploading...' : 'Upload to GitHub'}
+                          {uploading ? 'Uploading...' : 'Upload Images'}
                         </button>
                       </div>
                     )}
@@ -717,13 +601,7 @@ export default function AdminPage() {
                         {category.images.map((image) => (
                           <div key={image.id} className="flex-shrink-0 w-[200px] relative group/item">
                             <div className="relative aspect-square overflow-hidden rounded-lg border border-white/10 gallery-image-container">
-                              {image.dataUrl ? (
-                                <Image src={image.dataUrl} alt={image.alt} fill className="object-cover gallery-image" />
-                              ) : (
-                                <div className="w-full h-full bg-white/5 flex items-center justify-center">
-                                  <p className="text-white/40 text-xs text-center p-2">{image.title}</p>
-                                </div>
-                              )}
+                              <Image src={image.src} alt={image.alt} fill className="object-cover gallery-image" />
                               <button
                                 onClick={() => removeImage(category.id, image.id)}
                                 className="absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/item:opacity-100 transition-opacity"

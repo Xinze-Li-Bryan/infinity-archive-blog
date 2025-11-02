@@ -36,15 +36,15 @@ export default function GalleryPage() {
   useEffect(() => {
     setMounted(true)
 
-    // 从配置文件加载画廊数据
-    fetch('/gallery/config.json')
+    // 从数据库 API 加载画廊数据
+    fetch('/api/gallery/categories')
       .then(res => res.json())
-      .then((data: GalleryConfig) => {
-        setGalleryCategories(data.categories)
+      .then((data) => {
+        setGalleryCategories(data.categories || [])
         setLoading(false)
       })
       .catch(err => {
-        console.error('Failed to load gallery config:', err)
+        console.error('Failed to load gallery:', err)
         setLoading(false)
       })
   }, [])
