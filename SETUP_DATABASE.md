@@ -31,7 +31,7 @@ These are automatically available in your deployed app. For local development:
 
 ## Step 3: Initialize the Database
 
-After deploying your code to Vercel:
+After deploying your code to Vercel and ensuring environment variables are set:
 
 1. Visit: `https://lixinze.xyz/api/gallery/init`
 2. This will create the necessary tables:
@@ -39,6 +39,8 @@ After deploying your code to Vercel:
    - `images` table (for gallery images)
 
 You should see: `{"success": true}`
+
+**Note**: If you see "missing_connection_string" error, make sure `POSTGRES_URL` environment variable is set in Vercel and redeploy the application.
 
 ## Step 4: Start Using Your Gallery
 
