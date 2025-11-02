@@ -56,6 +56,9 @@ export default function HomePage() {
             <p>
               At the same time, I'm pursuing my PhD at the <a href="https://www.utoronto.ca" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-white/80 transition-colors">University of Toronto</a>, within a community of brilliant, open-minded researchers who constantly inspire new ways of thinking.
             </p>
+            <p>
+              The paradigm shift brought by AI emerges as part of the <span className="text-white font-semibold">broader dialectic of human history</span>. In this age of <span className="text-white font-semibold">vast transformation</span>, I am seeking resonance with minds shaping the future.
+            </p>
           </div>
         </section>
 
