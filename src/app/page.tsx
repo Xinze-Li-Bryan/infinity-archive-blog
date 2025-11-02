@@ -39,8 +39,8 @@ export default function HomePage() {
       <div className={`space-y-12 md:space-y-20 transition-all duration-2000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
         }`}>
         {/* Personal Introduction - Minimal */}
-        <section className="text-center space-y-6">
-          <div>
+        <section className="space-y-6">
+          <div className="text-center">
             <h1 className="text-3xl md:text-4xl font-thin tracking-wider mb-2">
               XINZE LI （Moqian）
             </h1>
@@ -49,7 +49,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="text-white/60 text-sm md:text-base leading-relaxed max-w-3xl mx-auto text-center space-y-4">
+          <div className="text-white/60 text-sm md:text-base leading-loose max-w-4xl space-y-5">
             <p>
               I place myself in both the world of creation and the world of ideas — I'm co-founding <a href="https://inftychi-website.zeabur.app" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-white/80 transition-colors">Infinity Archive</a> with an exceptional team, building a bridge between AI and mathematics.
             </p>
