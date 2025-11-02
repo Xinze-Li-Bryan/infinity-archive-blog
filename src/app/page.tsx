@@ -54,7 +54,7 @@ export default function HomePage() {
               I am currently co-founding an AI for mathematics startup and pursuing my PhD at University of Toronto.
             </p>
             <p className="mt-2">
-              I&apos;d love to connect with researchers and practitioners to explore ideas and inspire new possibilities together.
+              I&apos;d be happy to connect with researchers and practitioners to explore and inspire solutions in this age of vast transformation.
             </p>
           </div>
         </section>
