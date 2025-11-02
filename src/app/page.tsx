@@ -143,7 +143,7 @@ export default function HomePage() {
           </Link>
 
           {/* Thoughts Card */}
-          <Link href="/blog">
+          <Link href="/thoughts">
             <div className="relative p-10 md:p-12
                             border border-white/10
                             rounded-xl
