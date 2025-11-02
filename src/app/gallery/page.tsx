@@ -132,35 +132,40 @@ export default function GalleryPage() {
         {!loading && (
           <section className="space-y-8">
             {galleryCategories.map((category) => (
-              <div key={category.id} className="relative">
+              <div key={category.id} className="relative overflow-hidden">
                 {/* Category Header */}
                 <div
                   onClick={() => toggleCategory(category.id)}
-                  className="cursor-pointer group py-6 border-b border-white/10 hover:border-white/20 transition-all duration-500"
+                  className="cursor-pointer group py-6 border-b border-white/10 hover:border-white/20 transition-all duration-700"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <h2 className="text-xl md:text-2xl font-thin tracking-wider group-hover:text-white/50 transition-all duration-500 mb-2">
+                      <h2 className="text-xl md:text-2xl font-thin tracking-wider group-hover:text-white/70 transition-all duration-700 mb-2">
                         {category.name}
                       </h2>
-                      <p className="text-white/40 text-xs md:text-sm">
+                      <p className="text-white/40 text-xs md:text-sm group-hover:text-white/60 transition-all duration-700">
                         {category.description}
                         {category.images.length > 0 && (
-                          <span className="ml-2 text-white/30">
+                          <span className="ml-2 text-white/30 group-hover:text-white/50 transition-all duration-700">
                             · {category.images.length} image{category.images.length !== 1 ? 's' : ''}
                           </span>
                         )}
                       </p>
                     </div>
-                    <div className={`text-white/40 text-sm transition-transform duration-300 ml-4 ${expandedCategory === category.id ? 'rotate-180' : ''}`}>
-                      ▼
-                    </div>
                   </div>
                 </div>
 
-                {/* Expanded Gallery - Full Width */}
-                {expandedCategory === category.id && category.images.length > 0 && (
-                  <div className="mt-6 border border-white/10 rounded-xl p-4 bg-black/20">
+                {/* Expanded Gallery - Full Width with smooth animation */}
+                <div
+                  className={`transition-all duration-700 ease-in-out ${
+                    expandedCategory === category.id
+                      ? 'max-h-[2000px] opacity-100 mt-6'
+                      : 'max-h-0 opacity-0 mt-0'
+                  }`}
+                  style={{ overflow: expandedCategory === category.id ? 'visible' : 'hidden' }}
+                >
+                  {category.images.length > 0 && (
+                  <div className="border border-white/10 rounded-xl p-4 bg-black/20">
                     {/* Horizontal Scrollable Gallery */}
                     <div
                       ref={(el) => { scrollContainerRefs.current[category.id] = el }}
@@ -217,14 +222,8 @@ export default function GalleryPage() {
                       ← Scroll or swipe to view more →
                     </p>
                   </div>
-                )}
-
-                {/* Empty State */}
-                {expandedCategory === category.id && category.images.length === 0 && (
-                  <div className="mt-6 border border-white/10 rounded-xl p-8 bg-black/20 text-center">
-                    <p className="text-white/40 text-sm">No images in this category yet</p>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             ))}
           </section>
