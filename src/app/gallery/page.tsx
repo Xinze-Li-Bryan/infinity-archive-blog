@@ -245,6 +245,22 @@ export default function GalleryPage() {
             </p>
           </section>
         )}
+
+        {/* Copyright Disclaimer */}
+        <section className="mt-16 pt-8 border-t border-white/10">
+          <div className="text-center space-y-2">
+            <p className="text-white/30 text-xs tracking-wider">
+              版权声明 | COPYRIGHT NOTICE
+            </p>
+            <p className="text-white/20 text-xs max-w-2xl mx-auto leading-relaxed">
+              本画廊展示的图片收集自互联网，仅用于个人欣赏和学习交流。所有图片版权归原作者所有。如有侵权，请联系删除。
+            </p>
+            <p className="text-white/20 text-xs max-w-2xl mx-auto leading-relaxed">
+              Images displayed here are collected from the internet for personal appreciation and educational purposes only.
+              All rights belong to their respective owners. Contact for removal if needed.
+            </p>
+          </div>
+        </section>
       </div>
 
       {/* Lightbox Modal with Enhanced Features */}
