@@ -231,7 +231,8 @@ export default function AdminPage() {
         })
 
         if (!res.ok) {
-          throw new Error(`Failed to upload ${file.name}`)
+          const errorData = await res.json().catch(() => ({ error: 'Unknown error' }))
+          throw new Error(`Failed to upload ${file.name}: ${errorData.error || res.statusText}`)
         }
       }
 
