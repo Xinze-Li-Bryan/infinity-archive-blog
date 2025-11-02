@@ -51,7 +51,10 @@ export default function HomePage() {
 
           <div className="text-white/60 text-sm md:text-base leading-relaxed max-w-3xl mx-auto text-center space-y-4">
             <p>
-              I am co-founding <a href="https://inftychi-website.zeabur.app" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-white/80 transition-colors">Infinity Archive</a> with an exceptional team while pursuing my PhD at <a href="https://www.utoronto.ca" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-white/80 transition-colors">University of Toronto</a>, within a community of thoughtful and vibrant minds. The paradigm shift brought by AI emerges as part of the <span className="text-white font-semibold">broader dialectic of human history</span>. In this age of <span className="text-white font-semibold">vast transformation</span>, I am seeking resonance with minds shaping the future.
+              I place myself in both the world of creation and the world of ideas — I'm co-founding <a href="https://inftychi-website.zeabur.app" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-white/80 transition-colors">Infinity Archive</a> with an exceptional team, building a bridge between AI and mathematics.
+            </p>
+            <p>
+              At the same time, I'm pursuing my PhD at the <a href="https://www.utoronto.ca" target="_blank" rel="noopener noreferrer" className="text-white font-semibold hover:text-white/80 transition-colors">University of Toronto</a>, within a community of brilliant, open-minded researchers who constantly inspire new ways of thinking.
             </p>
           </div>
         </section>
