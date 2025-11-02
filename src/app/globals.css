@@ -1,26 +1,150 @@
 @import "tailwindcss";
 
+/* InftyChi Design System - 极简主义 + 数学美学 + 赛博道教 */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* 基础色 - 纯黑白对比 */
+  --color-background: #000000;
+  --color-foreground: #FFFFFF;
+
+  /* 透明度层级 - 精确的白色透明度梯度 */
+  --opacity-ghost: 0.10;      /* 幽灵元素 - 背景微光 */
+  --opacity-whisper: 0.20;    /* 耳语元素 - 边框、分割线 */
+  --opacity-muted: 0.30;      /* 静音元素 - 次要信息 */
+  --opacity-soft: 0.40;       /* 柔和元素 - 辅助文本 */
+  --opacity-medium: 0.50;     /* 中等元素 - 描述文字 */
+  --opacity-clear: 0.60;      /* 清晰元素 - 正文内容 */
+  --opacity-bright: 0.80;     /* 明亮元素 - 强调文本 */
+  --opacity-vivid: 0.90;      /* 鲜明元素 - 悬停状态 */
+  --opacity-full: 1.00;       /* 完全不透明 - 标题 */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --font-mono: var(--font-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-weight: 400;
+}
+
+/* 标题字重 - 轻盈感 */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+/* 响应式字体 - 移动端优先 */
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+/* 全局过渡效果 */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 选中文本样式 */
+::selection {
+  background: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+}
+
+/* 滚动条样式 - 极简设计 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* 自定义动画关键帧 */
+@keyframes rise {
+  0% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* 动画工具类 */
+.animate-rise {
+  animation: rise 15s linear infinite;
+}
+
+.animate-fall {
+  animation: fall 20s linear infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
 }

@@ -1,20 +1,36 @@
 "use client"
 
-import Link from 'next/link'
 import BlogLayout from '@/components/blog/BlogLayout'
-import AnimatedBorderModule from '@/components/blog/AnimatedBorderModule'
-import { getBlogPosts } from '@/lib/blog'
+import ThemeToggle from '@/components/ThemeToggle'
+import AnimatedBorder from '@/components/AnimatedBorder'
+import RippleEffect from '@/components/RippleEffect'
+import Link from 'next/link'
 import Image from 'next/image'
+import { useState, useEffect } from 'react'
 
 export default function HomePage() {
-  const recentPosts = getBlogPosts().slice(0, 3)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <BlogLayout>
-      <div className="space-y-12 font-mono">
+      {/* Ripple Effect */}
+      <RippleEffect />
+
+      {/* Theme Toggle */}
+      <div className="fixed top-4 md:top-8 right-4 md:right-8 z-50">
+        <ThemeToggle />
+      </div>
+
+      <div className={`space-y-12 md:space-y-20 transition-all duration-2000 ${
+        mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+      }`}>
         {/* Personal Introduction */}
-        <AnimatedBorderModule delay={300}>
-          <div className="flex gap-8">
+        <AnimatedBorder className="p-6 md:p-8" borderRadius="0.75rem">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8">
             <div className="w-32 h-32 border border-white/20 flex-shrink-0 overflow-hidden relative">
               <Image
                 src="/profile-photo.jpg"
@@ -26,128 +42,90 @@ export default function HomePage() {
 
             <div className="flex-1 space-y-4">
               <div>
-                <h1 className="text-3xl font-black tracking-wider mb-2">XINZE_LI (李昕泽)</h1>
-                <div className="text-white/60 space-y-1">
-                  <div>MATHEMATICS_PHD_STUDENT, UNIVERSITY_OF_TORONTO</div>
-                  <div className="text-white/40 text-sm">
-                    MIN_MAX_THEORY • COMPARISON_GEOMETRY • GEOMETRIC_MEASURE_THEORY
-                  </div>
-                </div>
+                <h1 className="text-3xl md:text-4xl font-thin tracking-wider mb-2">
+                  XINZE LI
+                </h1>
+                <p className="text-white/40 text-xs md:text-sm tracking-widest">
+                  李昕泽
+                </p>
               </div>
 
-              <p className="text-white/80 leading-relaxed">
-                Doctoral student specializing in min-max theory within geometric measure theory
-                and comparison geometry. Research focuses on variational methods and their
-                applications to geometric analysis.
+              <p className="text-white/60 text-sm md:text-base leading-relaxed">
+                Mathematics PhD Student, University of Toronto
               </p>
 
-              <div className="text-sm text-white/60">
-                EMAIL: <span className="text-white">xbryanli.li@mail.utoronto.ca</span>
-              </div>
-            </div>
-          </div>
-        </AnimatedBorderModule>
+              <p className="text-white/50 text-sm md:text-base leading-relaxed italic">
+                [更个人化的介绍将在这里...]
+              </p>
 
-        {/* Mathematical Research */}
-        <AnimatedBorderModule delay={600}>
-          <div className="space-y-6">
-            <h2 className="text-2xl font-black">MATHEMATICAL_RESEARCH</h2>
-
-            <div className="space-y-4">
-              <div className="border-l-4 border-white/20 pl-6">
-                <h3 className="text-lg font-bold">
-                  <a
-                    href="https://arxiv.org/abs/2205.13694"
-                    target="_blank"
-                    className="text-white hover:text-blue-400 transition-colors"
-                  >
-                    On the equidistribution of closed geodesics and geodesic nets
-                  </a>
-                </h3>
-                <p className="text-white/60 text-sm">Xinze Li, Bruno Staffa</p>
-              </div>
-
-              <div className="border-l-4 border-white/20 pl-6">
-                <h3 className="text-lg font-bold">
-                  <a
-                    href="https://arxiv.org/abs/2404.09792"
-                    target="_blank"
-                    className="text-white hover:text-blue-400 transition-colors"
-                  >
-                    Lecture Notes on Comparison Geometry
-                  </a>
-                </h3>
-                <p className="text-white/60 text-sm">Xinze Li</p>
-              </div>
-            </div>
-          </div>
-        </AnimatedBorderModule>
-
-        {/* Infinity Archive Project */}
-        <AnimatedBorderModule delay={800}>
-          <div className="flex gap-4">
-            <Link
-              href="https://inftychi.vercel.app"
-              target="_blank"
-              className="bg-white text-black px-6 py-3 font-black hover:bg-white/90 transition-colors"
-            >
-              DEMO
-            </Link>
-            <Link
-              href="https://github.com/Xinze-Li-Bryan/inftychi"
-              target="_blank"
-              className="border border-white px-6 py-3 font-black hover:bg-white/10 transition-colors"
-            >
-              GITHUB
-            </Link>
-            <Link
-              href="/blog"
-              className="border border-white px-6 py-3 font-black hover:bg-white/10 transition-colors"
-            >
-              DEV_LOG
-            </Link>
-            <Link
-              href="https://x.com/fuguixomega"
-              target="_blank"
-              className="border border-white px-6 py-3 font-black hover:bg-white/10 transition-colors"
-            >
-              X / TWITTER
-            </Link>
-          </div>
-        </AnimatedBorderModule>
-
-        {/* Recent Updates */}
-        {recentPosts.length > 0 && (
-          <AnimatedBorderModule delay={1000}>
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black">RECENT_UPDATES</h2>
-                <Link
-                  href="/blog"
-                  className="text-white/60 hover:text-white transition-colors"
+              <div className="text-xs md:text-sm text-white/40">
+                <a
+                  href="mailto:xbryanli.li@mail.utoronto.ca"
+                  className="hover:text-white/80 transition-all duration-500"
                 >
-                  VIEW_ALL →
-                </Link>
-              </div>
-
-              <div className="space-y-3">
-                {recentPosts.map((post) => (
-                  <Link key={post.slug} href={`/blog/${post.slug}`} className="block">
-                    <div className="border-l-4 border-white/20 pl-6 py-3 hover:border-white/60 hover:bg-white/5 transition-all duration-200">
-                      <div className="flex items-center gap-3 mb-1">
-                        <span className="bg-white text-black text-xs px-2 py-1 font-black">
-                          {post.version}
-                        </span>
-                        <time className="text-white/60 text-sm">{post.date}</time>
-                      </div>
-                      <h3 className="text-lg font-bold">{post.title}</h3>
-                    </div>
-                  </Link>
-                ))}
+                  xbryanli.li@mail.utoronto.ca
+                </a>
               </div>
             </div>
-          </AnimatedBorderModule>
-        )}
+          </div>
+        </AnimatedBorder>
+
+        {/* Navigation Cards */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Traditional Research Card */}
+          <Link href="/research">
+            <AnimatedBorder borderRadius="0.75rem">
+              <div className="p-6 md:p-8
+                              hover:bg-white/5
+                              transition-all duration-500
+                              cursor-pointer group">
+                <h2 className="text-xl md:text-2xl font-thin tracking-wider mb-4
+                               group-hover:text-white/90 transition-all duration-500">
+                  Mathematical Research
+                </h2>
+                <p className="text-white/40 text-xs md:text-sm tracking-widest mb-6">
+                  传统科研范式
+                </p>
+                <p className="text-white/60 text-sm md:text-base leading-relaxed mb-6">
+                  Min-max theory, comparison geometry, and geometric measure theory.
+                  Traditional mathematical research in differential geometry.
+                </p>
+                <div className="flex items-center gap-2 text-white/40 text-xs md:text-sm
+                                group-hover:text-white/80 transition-all duration-500">
+                  <span>View Research</span>
+                  <span>→</span>
+                </div>
+              </div>
+            </AnimatedBorder>
+          </Link>
+
+          {/* Future Mathematics Card */}
+          <Link href="/future">
+            <AnimatedBorder borderRadius="0.75rem">
+              <div className="bg-purple-950/5 p-6 md:p-8
+                              hover:bg-purple-950/10
+                              transition-all duration-500
+                              cursor-pointer group">
+                <h2 className="text-xl md:text-2xl font-thin tracking-wider mb-4
+                               group-hover:text-white/90 transition-all duration-500">
+                  Future of Mathematics
+                </h2>
+                <p className="text-white/40 text-xs md:text-sm tracking-widest mb-6">
+                  机器出版 · 人机协作
+                </p>
+                <p className="text-white/60 text-sm md:text-base leading-relaxed mb-6">
+                  Formal verification, machine publishing, and human-AI collaboration.
+                  Building the future of mathematical research.
+                </p>
+                <div className="flex items-center gap-2 text-purple-200/40 text-xs md:text-sm
+                                group-hover:text-purple-200/80 transition-all duration-500">
+                  <span>Explore Vision</span>
+                  <span>→</span>
+                </div>
+              </div>
+            </AnimatedBorder>
+          </Link>
+        </section>
       </div>
     </BlogLayout>
   )
