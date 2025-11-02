@@ -113,7 +113,7 @@ export default function HomePage() {
 
               {/* 描述文字 */}
               <p className="text-white/40 text-xs md:text-sm text-center leading-relaxed">
-                I am a PhD student at UofT
+                Drawing, interpreting, and verifying Math with natural language
               </p>
             </div>
           </Link>
