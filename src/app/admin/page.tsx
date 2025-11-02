@@ -24,7 +24,7 @@ export default function AdminDashboard() {
     e.preventDefault()
 
     // 简单的硬编码认证 - 生产环境应该使用更安全的方式
-    if (username === 'admin' && password === 'admin123') {
+    if (username === 'moqian' && password === 'Lgnrx527116') {
       setIsAuthenticated(true)
       localStorage.setItem('admin-auth', 'true')
       setLoginError('')
