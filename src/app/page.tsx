@@ -49,13 +49,45 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="text-white/50 text-sm md:text-base leading-relaxed italic max-w-2xl mx-auto">
-            <p>We live in an age of vast transformation.</p>
+          <div className="text-white/60 text-xs md:text-sm leading-relaxed max-w-2xl mx-auto text-center">
+            <p>
+              Co-founder of AI for mathematics startup. PhD student at University of Toronto.
+            </p>
+            <p className="mt-2">
+              I welcome conversations with researchers and practitioners to explore and inspire solutions in this age of vast transformation.
+            </p>
           </div>
         </section>
 
         {/* Navigation Cards */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Future Card */}
+          <Link href="/future">
+            <div className="relative p-10 md:p-12
+                            border border-white/10
+                            rounded-xl
+                            hover:bg-white/5
+                            hover:border-white/20
+                            transition-all duration-700
+                            cursor-pointer group
+                            min-h-[160px] flex flex-col justify-center items-center overflow-hidden">
+              <h2 className="text-3xl md:text-4xl font-thin tracking-wider
+                             group-hover:tracking-[0.1em] md:group-hover:tracking-[0.15em]
+                             group-hover:text-white/50
+                             transition-all duration-700 text-center mb-3">
+                NEO-MATH VENTURES
+              </h2>
+
+              <div className="w-16 h-[1px] bg-white/20
+                              group-hover:w-full
+                              transition-all duration-700 mb-4"></div>
+
+              <p className="text-white/40 text-xs md:text-sm text-center leading-relaxed">
+                Human-AI collaboration in mathematics
+              </p>
+            </div>
+          </Link>
+
           {/* Research Card */}
           <Link href="/research">
             <div className="relative p-10 md:p-12
@@ -82,33 +114,6 @@ export default function HomePage() {
               {/* 描述文字 */}
               <p className="text-white/40 text-xs md:text-sm text-center leading-relaxed">
                 I am a PhD student at UofT
-              </p>
-            </div>
-          </Link>
-
-          {/* Future Card */}
-          <Link href="/future">
-            <div className="relative p-10 md:p-12
-                            border border-white/10
-                            rounded-xl
-                            hover:bg-white/5
-                            hover:border-white/20
-                            transition-all duration-700
-                            cursor-pointer group
-                            min-h-[160px] flex flex-col justify-center items-center overflow-hidden">
-              <h2 className="text-3xl md:text-4xl font-thin tracking-wider
-                             group-hover:tracking-[0.1em] md:group-hover:tracking-[0.15em]
-                             group-hover:text-white/50
-                             transition-all duration-700 text-center mb-3">
-                NEO-MATH VENTURES
-              </h2>
-
-              <div className="w-16 h-[1px] bg-white/20
-                              group-hover:w-full
-                              transition-all duration-700 mb-4"></div>
-
-              <p className="text-white/40 text-xs md:text-sm text-center leading-relaxed">
-                Human-AI collaboration in mathematics
               </p>
             </div>
           </Link>
@@ -166,33 +171,6 @@ export default function HomePage() {
               </p>
             </div>
           </Link>
-        </section>
-
-        {/* About Section */}
-        <section className="border-t border-white/10 pt-8 md:pt-12">
-          <h3 className="text-xs md:text-sm text-white/40 tracking-widest mb-6">ABOUT</h3>
-          <div className="space-y-4 text-white/50 text-sm md:text-base leading-relaxed italic max-w-3xl">
-            <p>We are born of practice itself—<br />
-              carrying the past within us,<br />
-              shaping the future through our becoming.</p>
-
-            <p>We sustain the old patterns,<br />
-              and in sustaining, we let new ones emerge.</p>
-
-            <p>Between past and future,<br />
-              between the virtual and the real,<br />
-              between construction and collapse,<br />
-              we witness the birth and passing of the world&apos;s true self.</p>
-
-            <p>We dwell within the current,<br />
-              and we are the current itself.<br />
-              Every contradiction breathes its own accord.<br />
-              The universe moves through all things—<br />
-              between the infinite and the dust,<br />
-              between the boundless world and a single cup of tea.</p>
-
-            <p className="text-white/40 text-xs pt-4">🜄</p>
-          </div>
         </section>
 
         {/* Contact Section */}
