@@ -14,7 +14,7 @@ interface Ripple {
 export default function RippleEffect() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const ripplesRef = useRef<Ripple[]>([])
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number | undefined>(undefined)
   const lastRippleTimeRef = useRef(0)
 
   useEffect(() => {
@@ -37,8 +37,8 @@ export default function RippleEffect() {
     const handleMouseMove = (e: MouseEvent) => {
       const now = Date.now()
 
-      // 节流：每 150ms 最多创建一个涟漪
-      if (now - lastRippleTimeRef.current < 150) return
+      // 节流：每 300ms 最多创建一个涟漪（减少频率）
+      if (now - lastRippleTimeRef.current < 300) return
 
       // 检查鼠标是否在可交互元素上
       const target = e.target as HTMLElement
@@ -87,16 +87,16 @@ export default function RippleEffect() {
 
         // 使用 globalCompositeOperation 实现反色效果
         ctx.globalCompositeOperation = 'difference'
-        ctx.strokeStyle = `rgba(255, 255, 255, ${ripple.opacity * 0.6})`
-        ctx.lineWidth = 2
+        ctx.strokeStyle = `rgba(255, 255, 255, ${ripple.opacity * 0.15})`  // 降低透明度从0.6到0.15
+        ctx.lineWidth = 1  // 降低线宽从2到1
         ctx.beginPath()
         ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2)
         ctx.stroke()
 
         // 绘制更细的内圈
         if (progress > 0.2) {
-          ctx.strokeStyle = `rgba(255, 255, 255, ${ripple.opacity * 0.3})`
-          ctx.lineWidth = 1
+          ctx.strokeStyle = `rgba(255, 255, 255, ${ripple.opacity * 0.08})`  // 降低透明度从0.3到0.08
+          ctx.lineWidth = 0.5  // 降低线宽从1到0.5
           ctx.beginPath()
           ctx.arc(ripple.x, ripple.y, ripple.radius * 0.7, 0, Math.PI * 2)
           ctx.stroke()
