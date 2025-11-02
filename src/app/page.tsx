@@ -51,10 +51,10 @@ export default function HomePage() {
 
           <div className="text-white/60 text-xs md:text-sm leading-relaxed max-w-2xl mx-auto text-center">
             <p>
-              I am currently co-founding an AI for mathematics startup and pursuing my PhD at the University of Toronto.
+              I am currently co-founding an AI for mathematics startup and pursuing my PhD at University of Toronto.
             </p>
             <p className="mt-2">
-              I welcome conversations with researchers and practitioners to explore and inspire solutions in this age of vast transformation.
+              I&apos;d love to connect with researchers and practitioners to explore ideas and inspire new possibilities together.
             </p>
           </div>
         </section>
