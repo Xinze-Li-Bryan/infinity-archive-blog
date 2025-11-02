@@ -236,7 +236,14 @@ export default function AdminPage() {
         }
       }
 
-      await loadCategories()
+      // Reload categories to show new images
+      try {
+        await loadCategories()
+      } catch (loadError) {
+        console.error('Failed to reload categories:', loadError)
+        // Don't fail the whole upload if reload fails
+      }
+
       setUploadingImages({})
       setImageMetadata({})
       setUploadStatus('✅ Upload complete!')
