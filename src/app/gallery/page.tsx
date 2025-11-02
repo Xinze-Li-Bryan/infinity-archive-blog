@@ -21,17 +21,16 @@ type CategoryType = {
   images: ImageType[]
 }
 
-type GalleryConfig = {
-  categories: CategoryType[]
-}
-
 export default function GalleryPage() {
   const [mounted, setMounted] = useState(false)
   const [selectedImage, setSelectedImage] = useState<{ src: string; alt: string; title: string } | null>(null)
   const [galleryCategories, setGalleryCategories] = useState<CategoryType[]>([])
   const [loading, setLoading] = useState(true)
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
-  const scrollContainerRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
+  const scrollRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const animationFrames = useRef<{ [key: string]: number }>({})
+  const isPaused = useRef<{ [key: string]: boolean }>({})
 
   useEffect(() => {
     setMounted(true)
@@ -49,9 +48,97 @@ export default function GalleryPage() {
       })
   }, [])
 
-  const toggleCategory = (categoryId: string) => {
-    setExpandedCategory(expandedCategory === categoryId ? null : categoryId)
-  }
+  // 当悬停的分类改变时，更新展开状态
+  useEffect(() => {
+    if (hoveredCategory) {
+      setExpandedCategory(hoveredCategory)
+    }
+  }, [hoveredCategory])
+
+  // 自动滚动动画 - 像转动纸环一样
+  useEffect(() => {
+    const autoScroll = (categoryId: string) => {
+      const container = scrollRefs.current[categoryId]
+      if (!container || isPaused.current[categoryId]) return
+
+      const scrollWidth = container.scrollWidth
+      const halfWidth = scrollWidth / 2
+
+      // 每帧滚动的距离
+      container.scrollLeft += 0.5
+
+      // 无缝循环：滚动到一半时重置到开头
+      if (container.scrollLeft >= halfWidth) {
+        container.scrollLeft = 0
+      }
+
+      animationFrames.current[categoryId] = requestAnimationFrame(() => autoScroll(categoryId))
+    }
+
+    // 为每个展开的category启动动画
+    galleryCategories.forEach(category => {
+      if (expandedCategory === category.id) {
+        const container = scrollRefs.current[category.id]
+        if (container) {
+          // 初始化
+          container.scrollLeft = 0
+          isPaused.current[category.id] = false
+
+          // 启动自动滚动
+          autoScroll(category.id)
+        }
+      } else {
+        // 停止非展开category的动画
+        if (animationFrames.current[category.id]) {
+          cancelAnimationFrame(animationFrames.current[category.id])
+        }
+      }
+    })
+
+    // 清理
+    return () => {
+      Object.values(animationFrames.current).forEach(frame => {
+        if (frame) cancelAnimationFrame(frame)
+      })
+    }
+  }, [galleryCategories, expandedCategory])
+
+  // 处理手动滚动的无缝循环
+  useEffect(() => {
+    const handleScroll = (categoryId: string) => {
+      const container = scrollRefs.current[categoryId]
+      if (!container) return
+
+      const scrollWidth = container.scrollWidth
+      const scrollLeft = container.scrollLeft
+      const halfWidth = scrollWidth / 2
+
+      // 手动滚动到一半以后，无缝跳回开头
+      if (scrollLeft >= halfWidth - 10) {
+        container.scrollLeft = scrollLeft - halfWidth
+      }
+    }
+
+    // 为每个category添加scroll监听
+    galleryCategories.forEach(category => {
+      const container = scrollRefs.current[category.id]
+      if (container) {
+        const listener = () => handleScroll(category.id)
+        container.addEventListener('scroll', listener, { passive: true })
+      }
+    })
+
+    // 清理
+    return () => {
+      galleryCategories.forEach(category => {
+        const container = scrollRefs.current[category.id]
+        if (container) {
+          const listener = () => handleScroll(category.id)
+          container.removeEventListener('scroll', listener)
+        }
+      })
+    }
+  }, [galleryCategories])
 
   const handleDownload = (imageSrc: string, imageTitle: string) => {
     // 创建一个临时 a 标签来下载图片
@@ -64,27 +151,15 @@ export default function GalleryPage() {
     document.body.removeChild(link)
   }
 
-  // 自动滚动功能
-  const startAutoScroll = (categoryId: string) => {
-    const container = scrollContainerRefs.current[categoryId]
-    if (!container) return
+  // 处理鼠标进入分类
+  const handleCategoryMouseEnter = (categoryId: string) => {
+    setHoveredCategory(categoryId)
+  }
 
-    let scrollAmount = 0
-    const scrollStep = 0.5 // 滚动速度
-
-    const scroll = () => {
-      if (container) {
-        scrollAmount += scrollStep
-        container.scrollLeft = scrollAmount
-
-        // 如果滚动到末尾，重置到开始
-        if (scrollAmount >= container.scrollWidth - container.clientWidth) {
-          scrollAmount = 0
-        }
-      }
-    }
-
-    return setInterval(scroll, 20)
+  // 处理鼠标离开分类
+  const handleCategoryMouseLeave = () => {
+    setHoveredCategory(null)
+    setExpandedCategory(null)
   }
 
   return (
@@ -132,10 +207,14 @@ export default function GalleryPage() {
         {!loading && (
           <section className="space-y-8">
             {galleryCategories.map((category) => (
-              <div key={category.id} className="relative overflow-hidden">
+              <div
+                key={category.id}
+                className="relative overflow-hidden"
+                onMouseEnter={() => handleCategoryMouseEnter(category.id)}
+                onMouseLeave={() => handleCategoryMouseLeave()}
+              >
                 {/* Category Header */}
                 <div
-                  onClick={() => toggleCategory(category.id)}
                   className="cursor-pointer group py-6 border-b border-white/10 hover:border-white/20 transition-all duration-700"
                 >
                   <div className="flex items-center justify-between">
@@ -167,68 +246,112 @@ export default function GalleryPage() {
                 <div
                   className={`transition-all duration-700 ease-in-out ${
                     expandedCategory === category.id
-                      ? 'max-h-[2000px] opacity-100 mt-6'
+                      ? 'max-h-[3000px] opacity-100 mt-6'
                       : 'max-h-0 opacity-0 mt-0'
                   }`}
                   style={{ overflow: expandedCategory === category.id ? 'visible' : 'hidden' }}
                 >
                   {category.images.length > 0 && (
                   <div className="border border-white/10 rounded-xl p-4 bg-black/20">
-                    {/* Horizontal Scrollable Gallery */}
+                    {/* 横向无限滚动画廊 */}
                     <div
-                      ref={(el) => { scrollContainerRefs.current[category.id] = el }}
-                      className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory"
-                      style={{
-                        scrollbarWidth: 'none',
-                        msOverflowStyle: 'none',
-                        WebkitOverflowScrolling: 'touch'
-                      }}
+                      ref={(el) => { scrollRefs.current[category.id] = el }}
+                      className="gallery-scroll-container gallery-image-container"
                     >
-                      {category.images.map((image) => (
-                        <div
-                          key={image.id}
-                          className="flex-shrink-0 w-[300px] md:w-[400px] snap-center group/item relative"
-                        >
-                          {/* Image Container */}
-                          <div className="relative aspect-square overflow-hidden rounded-lg border border-white/10 hover:border-white/30 transition-all duration-500 gallery-image-container">
-                            <Image
-                              src={image.src}
-                              alt={image.alt}
-                              fill
-                              className="object-cover group-hover/item:scale-105 transition-transform duration-700 cursor-pointer gallery-image"
-                              onClick={() => setSelectedImage({ src: image.src, alt: image.alt, title: image.title })}
-                            />
+                      <div className="gallery-scroll-track">
+                        {/* 创建多列，每列垂直铺满不规则的长方形色块 */}
+                        {(() => {
+                          const columnBlocks = [
+                            [150, 120, 130], // 列1: 3个块
+                            [180, 220],      // 列2: 2个块
+                            [160, 140, 100], // 列3: 3个块
+                            [200, 200],      // 列4: 2个块
+                            [130, 170, 100], // 列5: 3个块
+                          ]
 
-                            {/* Image Info Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-black/0 opacity-0 group-hover/item:opacity-100 transition-opacity duration-500">
-                              <div className="absolute bottom-0 left-0 right-0 p-4">
-                                <h3 className="text-white text-sm font-semibold mb-1">{image.title}</h3>
-                                <p className="text-white/60 text-xs">{image.date}</p>
-                              </div>
+                          const images = category.images
+                          let imageIndex = 0
+
+                          // 动态生成列，直到所有图片都被分配
+                          const columns = []
+                          let colIndex = 0
+
+                          while (imageIndex < images.length) {
+                            const blocks = columnBlocks[colIndex % columnBlocks.length]
+                            const columnImages = blocks.map((height) => {
+                              const image = imageIndex < images.length ? images[imageIndex] : null
+                              imageIndex++
+                              return { height, image }
+                            })
+                            columns.push(columnImages)
+                            colIndex++
+                          }
+
+                          // 复制列数组2次实现无缝循环
+                          const duplicatedColumns = [...columns, ...columns]
+
+                          return duplicatedColumns.map((columnBlocks, colIdx) => (
+                            <div key={colIdx} style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              flexShrink: 0,
+                              height: '100%'
+                            }}>
+                              {columnBlocks.map(({ height, image }, blockIdx) => (
+                                <div
+                                  key={`${colIdx}-${blockIdx}`}
+                                  style={{
+                                    width: '200px',
+                                    height: `${height}px`,
+                                    flexShrink: 0,
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    cursor: image ? 'pointer' : 'default',
+                                    backgroundColor: image ? 'transparent' : '#333'
+                                  }}
+                                  onClick={image ? () => setSelectedImage({ src: image.src, alt: image.alt, title: image.title }) : undefined}
+                                >
+                                  {image && (
+                                    <>
+                                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                                      <img
+                                        src={image.src}
+                                        alt={image.alt}
+                                        style={{
+                                          width: '100%',
+                                          height: '100%',
+                                          objectFit: 'cover',
+                                          display: 'block'
+                                        }}
+                                      />
+                                      <div className="gallery-item-overlay">
+                                        <div className="gallery-item-info">
+                                          <h3 className="text-white text-xs font-semibold mb-1">{image.title}</h3>
+                                          <p className="text-white/60 text-[10px]">{image.date}</p>
+                                        </div>
+                                      </div>
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation()
+                                          handleDownload(image.src, image.title)
+                                        }}
+                                        className="gallery-download-btn"
+                                        title="Download image"
+                                      >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
+                              ))}
                             </div>
-
-                            {/* Download Button */}
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleDownload(image.src, image.title)
-                              }}
-                              className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full opacity-0 group-hover/item:opacity-100 transition-opacity duration-300"
-                              title="Download image"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                          ))
+                        })()}
+                      </div>
                     </div>
-
-                    {/* Scroll Hint */}
-                    <p className="text-white/30 text-xs text-center mt-2">
-                      ← Scroll or swipe to view more →
-                    </p>
+                    <p className="text-white/30 text-xs text-center mt-3">Click image to view • Auto-scrolling</p>
                   </div>
                   )}
                 </div>
@@ -318,6 +441,110 @@ export default function GalleryPage() {
         .scrollbar-hide {
           -ms-overflow-style: none;
           scrollbar-width: none;
+        }
+
+        /* 横向无限滚动容器 - 支持手动滚动但无滚动条 */
+        .gallery-scroll-container {
+          width: 100%;
+          height: 400px;
+          overflow-x: auto;
+          overflow-y: hidden;
+          border-radius: 8px;
+          position: relative;
+          scrollbar-width: none;
+        }
+
+        .gallery-scroll-container::-webkit-scrollbar {
+          display: none;
+        }
+
+        /* 滚动轨道 - JavaScript控制滚动 */
+        .gallery-scroll-track {
+          display: flex;
+          gap: 0;
+          width: max-content;
+          height: 100%;
+        }
+
+        /* 单列 - 垂直排列图片，宽度自动适应内容 */
+        .gallery-column {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          flex-shrink: 0;
+        }
+
+        /* 单个图片项 - 不规则高度的小砖 */
+        .gallery-item {
+          position: relative;
+          flex-shrink: 0;
+          overflow: hidden;
+          cursor: pointer;
+        }
+
+        /* 图片本身 - 高度固定，宽度按比例自动计算 */
+        .gallery-item-image {
+          height: 100%;
+          width: auto;
+          object-fit: cover;
+          display: block;
+        }
+
+        /* 图片信息覆盖层 */
+        .gallery-item-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          display: flex;
+          align-items: flex-end;
+          padding: 12px;
+        }
+
+        .gallery-item:hover .gallery-item-overlay {
+          opacity: 1;
+        }
+
+        .gallery-item-info {
+          width: 100%;
+        }
+
+        /* 下载按钮 */
+        .gallery-download-btn {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: rgba(0, 0, 0, 0.6);
+          color: white;
+          padding: 6px;
+          border-radius: 50%;
+          opacity: 0;
+          transition: all 0.3s ease;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .gallery-item:hover .gallery-download-btn {
+          opacity: 1;
+        }
+
+        .gallery-download-btn:hover {
+          background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+          .masonry-scroll-container {
+            height: 400px;
+          }
+
+          .masonry-item-hovered {
+            transform: scale(1.15);
+          }
         }
       `}</style>
     </BlogLayout>
