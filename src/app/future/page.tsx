@@ -33,9 +33,8 @@ export default function FuturePage() {
         </div>
       </Link>
 
-      <div className={`space-y-8 md:space-y-12 transition-all duration-2000 ${
-        mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-      }`}>
+      <div className={`space-y-8 md:space-y-12 transition-all duration-2000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}>
         {/* Page Title */}
         <section className="border-b border-white/10 pb-6 pt-8 md:pt-12">
           <h1 className="text-2xl md:text-3xl font-thin tracking-wider">
@@ -45,10 +44,6 @@ export default function FuturePage() {
 
         {/* Introduction */}
         <section className="space-y-4">
-          <p className="text-white/60 text-xs md:text-sm leading-relaxed">
-            For centuries, mathematics lived by an iron law: to create new truth, one must manually verify old truth.
-            This made mathematics rigorous—and simultaneously inaccessible.
-          </p>
           <p className="text-white/60 text-xs md:text-sm leading-relaxed">
             We are witnessing a paradigm shift. When machines verify and humans create, mathematics becomes infinitely
             generative—accessible to everyone. Human intuition and creativity are liberated. Mathematics enters a new era.
