@@ -141,7 +141,7 @@ export default function FuturePage() {
               >
                 Aya Prover
               </a>
-              <p className="text-white/40 text-xs mt-1">Tesla Zhang's work, a proof assistant I follow closely</p>
+              <p className="text-white/40 text-xs mt-1">Tesla Zhang&apos;s work, a proof assistant I follow closely</p>
             </div>
 
             <div>
@@ -153,7 +153,7 @@ export default function FuturePage() {
               >
                 ReasLab Lean Online IDE
               </a>
-              <p className="text-white/40 text-xs mt-1">Zaiwen Wen's team work at BICMR, PKU</p>
+              <p className="text-white/40 text-xs mt-1">Zaiwen Wen&apos;s team work at BICMR, PKU</p>
             </div>
 
             <div>
@@ -165,7 +165,7 @@ export default function FuturePage() {
               >
                 Acorn Prover
               </a>
-              <p className="text-white/40 text-xs mt-1">Kevin Lacker's team work, a theorem prover</p>
+              <p className="text-white/40 text-xs mt-1">Kevin Lacker&apos;s team work, a theorem prover</p>
             </div>
           </div>
         </section>

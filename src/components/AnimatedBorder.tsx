@@ -16,7 +16,7 @@ export default function AnimatedBorder({
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number>(0)
   const progressRef = useRef(0)
   const targetProgressRef = useRef(0)
   const mousePositionRef = useRef({ x: 0, y: 0 })
