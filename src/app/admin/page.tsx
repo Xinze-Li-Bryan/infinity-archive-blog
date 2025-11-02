@@ -314,6 +314,10 @@ export default function AdminPage() {
   }
 
   const removeImage = (categoryId: string, imageId: number) => {
+    if (!confirm('Are you sure you want to delete this image?')) {
+      return
+    }
+
     const updatedConfig = {
       ...config,
       categories: config.categories.map(c =>
@@ -323,6 +327,64 @@ export default function AdminPage() {
       )
     }
     setConfig(updatedConfig)
+  }
+
+  const saveConfigToGithub = async () => {
+    if (!githubToken) {
+      alert('GitHub token not found. Please check your environment variables.')
+      return
+    }
+
+    setUploading(true)
+    setUploadStatus('Saving configuration to GitHub...')
+
+    try {
+      // 获取当前config.json的SHA
+      const getResponse = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/gallery/config.json`, {
+        headers: {
+          'Authorization': `token ${githubToken}`,
+        }
+      })
+
+      let sha = ''
+      if (getResponse.ok) {
+        const data = await getResponse.json()
+        sha = data.sha
+      }
+
+      // 上传新的config.json
+      const configContent = btoa(unescape(encodeURIComponent(JSON.stringify(config, null, 2))))
+      const putResponse = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/public/gallery/config.json`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${githubToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: 'Update gallery configuration',
+          content: configContent,
+          branch: GITHUB_BRANCH,
+          ...(sha && { sha })
+        })
+      })
+
+      if (!putResponse.ok) {
+        const error = await putResponse.json()
+        throw new Error(`Failed to update config: ${error.message}`)
+      }
+
+      setUploadStatus('✅ Configuration saved! Vercel will auto-deploy.')
+
+      setTimeout(() => {
+        setUploadStatus('')
+        setUploading(false)
+      }, 3000)
+
+    } catch (error) {
+      console.error('Save error:', error)
+      setUploadStatus(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      setUploading(false)
+    }
   }
 
   // 登录页面
@@ -408,15 +470,24 @@ export default function AdminPage() {
             <h1 className="text-2xl md:text-3xl font-thin tracking-wider">
               ADMIN PANEL
             </h1>
-            <button
-              onClick={handleLogout}
-              className="text-white/40 hover:text-white/80 text-xs transition-colors"
-            >
-              Logout
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={saveConfigToGithub}
+                disabled={uploading}
+                className="bg-white/10 hover:bg-white/20 text-white/90 px-4 py-2 rounded text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                💾 Save to GitHub
+              </button>
+              <button
+                onClick={handleLogout}
+                className="text-white/40 hover:text-white/80 text-xs transition-colors px-2"
+              >
+                Logout
+              </button>
+            </div>
           </div>
           <p className="text-white/60 text-xs md:text-sm mt-2">
-            Manage your gallery categories and images
+            Make changes and click "Save to GitHub" to deploy
           </p>
         </section>
 
